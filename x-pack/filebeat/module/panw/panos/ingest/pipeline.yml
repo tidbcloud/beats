@@ -136,6 +136,7 @@ processors:
        def start = ctx.event?.start;
        if (start != null) {
           ctx.event['end'] = ZonedDateTime.parse(start).plusNanos(nanos);
+<<<<<<< HEAD
        }
 
 # Set network.direction using src/dst zone (traffic logs).
@@ -619,6 +620,393 @@ processors:
        - server.nat.ip
        - server.nat.port
      if: 'ctx?.destination?.nat?.ip == "0.0.0.0" && ctx?.destination?.nat?.port == 0'
+=======
+        }
+
+## TRAFFIC
+  - pipeline:
+      if: ctx?.panw?.panos?.type == "TRAFFIC"
+      name: '{< IngestPipeline "traffic" >}'
+
+## THREAT
+  - pipeline:
+      if: ctx?.panw?.panos?.type == "THREAT"
+      name: '{< IngestPipeline "threat" >}'
+
+## GLOBAL PROTECT
+  - pipeline:
+      if: ctx?.panw?.panos?.type == "GLOBALPROTECT"
+      name: '{< IngestPipeline "globalprotect" >}'
+
+## USER ID
+  - pipeline:
+      if: ctx?.panw?.panos?.type == "USERID"
+      name: '{< IngestPipeline "userid" >}'
+
+## HIPMATCH
+  - pipeline:
+      if: ctx?.panw?.panos?.type != null && ["HIP-MATCH", "HIPMATCH"].contains(ctx?.panw?.panos?.type)
+      name: '{< IngestPipeline "hipmatch" >}'
+
+  - append:
+      field: event.type
+      allow_duplicates: false
+      value: allowed
+      if: "ctx?.panw?.panos?.action != null && ['alert', 'allow', 'continue'].contains(ctx.panw.panos.action)"
+  - append:
+      field: event.type
+      allow_duplicates: false
+      value: denied
+      if: "ctx?.panw?.panos?.action != null && ['deny', 'drop', 'reset-client', 'reset-server', 'reset-both', 'block-url', 'block-ip', 'random-drop', 'sinkhole', 'block'].contains(ctx.panw.panos.action)"
+  - set:
+      field: event.outcome
+      value: success
+
+  # event.action for traffic logs.
+  - set:
+      field: event.action
+      value: flow_started
+      if: 'ctx?.panw?.panos?.sub_type == "start"'
+  - append:
+      field: event.type
+      allow_duplicates: false
+      value:
+        - start
+        - connection
+      if: 'ctx?.panw?.panos?.sub_type == "start"'
+  - set:
+      field: event.action
+      value: flow_terminated
+      if: 'ctx?.panw?.panos?.sub_type == "end"'
+  - append:
+      field: event.type
+      allow_duplicates: false
+      value:
+        - end
+        - connection
+      if: 'ctx?.panw?.panos?.sub_type == "end"'
+  - set:
+      field: event.action
+      value: flow_dropped
+      if: 'ctx?.panw?.panos?.sub_type == "drop"'
+  - append:
+      field: event.type
+      allow_duplicates: false
+      value:
+        - denied
+        - connection
+      if: 'ctx?.panw?.panos?.sub_type == "drop"'
+  - set:
+      field: event.action
+      value: flow_denied
+      if: 'ctx?.panw?.panos?.sub_type == "deny"'
+  - append:
+      field: event.type
+      allow_duplicates: false
+      value:
+        - denied
+        - connection
+      if: 'ctx?.panw?.panos?.sub_type == "deny"'
+
+  # event.action for threat logs.
+  - set:
+      field: event.action
+      value: data_match
+      if: 'ctx?.panw?.panos?.sub_type == "data"'
+  - set:
+      field: event.action
+      value: file_match
+      if: 'ctx?.panw?.panos?.sub_type == "file"'
+  - set:
+      field: event.action
+      value: flood_detected
+      if: 'ctx?.panw?.panos?.sub_type == "flood"'
+  - set:
+      field: event.action
+      value: packet_attack
+      if: 'ctx?.panw?.panos?.sub_type == "packet"'
+  - set:
+      field: event.action
+      value: scan_detected
+      if: 'ctx?.panw?.panos?.sub_type == "scan"'
+  - set:
+      field: event.action
+      value: spyware_detected
+      if: 'ctx?.panw?.panos?.sub_type == "spyware"'
+  - set:
+      field: event.action
+      value: url_filtering
+      if: 'ctx?.panw?.panos?.sub_type == "url"'
+  - set:
+      field: event.action
+      value: virus_detected
+      if: 'ctx?.panw?.panos?.sub_type == "virus"'
+  - set:
+      field: event.action
+      value: exploit_detected
+      if: 'ctx?.panw?.panos?.sub_type == "vulnerability"'
+  - set:
+      field: event.action
+      value: wildfire_verdict
+      if: 'ctx?.panw?.panos?.sub_type == "wildfire"'
+  - set:
+      field: event.action
+      value: wildfire_virus_detected
+      if: 'ctx?.panw?.panos?.sub_type == "wildfire-virus"'
+
+
+  # Set numeric log.level from event.severity.
+  - set:
+      field: "event.severity"
+      if: 'ctx?.log?.level == "critical"'
+      value: 1
+  - set:
+      field: "event.severity"
+      if: 'ctx?.log?.level == "high"'
+      value: 2
+  - set:
+      field: "event.severity"
+      if: 'ctx?.log?.level == "medium"'
+      value: 3
+  - set:
+      field: "event.severity"
+      if: 'ctx?.log?.level == "low"'
+      value: 4
+  - set:
+      field: "event.severity"
+      if: 'ctx?.log?.level == "informational"'
+      value: 5
+
+  # Normalize event.outcome.
+  # These values appear in the TRAFFIC docs but look like a mistake.
+  - lowercase:
+      field: panw.panos.action
+      ignore_missing: true
+  - gsub:
+      field: panw.panos.action
+      pattern: \s
+      replacement: "-"
+      ignore_missing: true
+
+  # Build related.ip array from src/dest/NAT IPs.
+  - append:
+      if: 'ctx?.source?.ip != null'
+      field: related.ip
+      allow_duplicates: false
+      value:
+        - '{{source.ip}}'
+  - append:
+      if: 'ctx?.destination?.ip != null'
+      field: related.ip
+      allow_duplicates: false
+      value:
+        - '{{destination.ip}}'
+  - append:
+      if: 'ctx?.source?.nat?.ip != null'
+      field: related.ip
+      allow_duplicates: false
+      value:
+        - '{{source.nat.ip}}'
+  - append:
+      if: 'ctx?.destination?.nat?.ip != null'
+      field: related.ip
+      allow_duplicates: false
+      value:
+        - '{{destination.nat.ip}}'
+
+  # Geolocation for source.
+  - geoip:
+      if: 'ctx?.source?.ip != null'
+      field: source.ip
+      target_field: source.geo
+
+  # Geolocation for destination.
+  - geoip:
+      if: 'ctx?.destination?.ip != null'
+      field: destination.ip
+      target_field: destination.geo
+
+  # IP Autonomous System (AS) Lookup
+  - geoip:
+      database_file: GeoLite2-ASN.mmdb
+      field: source.ip
+      target_field: source.as
+      properties:
+        - asn
+        - organization_name
+      ignore_missing: true
+  - geoip:
+      database_file: GeoLite2-ASN.mmdb
+      field: destination.ip
+      target_field: destination.as
+      properties:
+        - asn
+        - organization_name
+      ignore_missing: true
+  - rename:
+      field: source.as.asn
+      target_field: source.as.number
+      ignore_missing: true
+  - rename:
+      field: source.as.organization_name
+      target_field: source.as.organization.name
+      ignore_missing: true
+  - rename:
+      field: destination.as.asn
+      target_field: destination.as.number
+      ignore_missing: true
+  - rename:
+      field: destination.as.organization_name
+      target_field: destination.as.organization.name
+      ignore_missing: true
+
+  # Set source|destination.geo.name from panw's srcloc|dstloc
+  - rename:
+      if: 'ctx.source?.geo?.name == null'
+      field: _temp_.srcloc
+      target_field: source.geo.name
+      ignore_missing: true
+  - rename:
+      if: 'ctx.destination?.geo?.name == null'
+      field: _temp_.dstloc
+      target_field: destination.geo.name
+      ignore_missing: true
+
+  # Append NAT community_id to network.community_id
+  - append:
+      if: 'ctx?.panw?.panos?.network?.nat?.community_id != null'
+      field: network.community_id
+      allow_duplicates: false
+      value:
+      - '{{panw.panos.network.nat.community_id}}'
+
+  - set:
+      field: rule.name
+      value: "{{panw.panos.ruleset}}"
+      ignore_empty_value: true
+
+  # Set url and file values
+  - rename:
+      if: 'ctx?.panw?.panos?.sub_type != "url"'
+      field: url.original
+      target_field: file.name
+      ignore_missing: true
+
+  - grok:
+      field: url.original
+      patterns:
+        - '(%{ANY:url.scheme}\:\/\/)?(%{USERNAME:url.username}(\:%{PASSWORD:url.password})?\@)?%{DOMAIN:url.domain}(\:%{POSINT:url.port})?(%{PATH:url.path})?(\?%{QUERY:url.query})?(\#%{ANY:url.fragment})?'
+      ignore_missing: true
+      pattern_definitions:
+        USERNAME: '[^\:]*'
+        PASSWORD: '[^@]*'
+        DOMAIN: '[^\/\?#\:]*'
+        PATH: '[^\?#]*'
+        QUERY: '[^#]*'
+        ANY: '.*'
+      if: 'ctx?.url?.original != null && ctx?.url?.original != "-/" && ctx?.url?.original != ""'
+
+  - grok:
+      field: url.path
+      patterns:
+        - '%{FILENAME}((?:\.%{ANY})*(\.%{ANY:url.extension}))?'
+      ignore_missing: true
+      pattern_definitions:
+        FILENAME: '[^\.]+'
+        ANY: '.*'
+      if: 'ctx?.url?.path != null && ctx?.url?.path != ""'
+
+  - grok:
+      field: file.name
+      patterns:
+        - '%{FILENAME}((?:\.%{ANY})*(\.%{ANY:file.extension}))?'
+      ignore_missing: true
+      pattern_definitions:
+        FILENAME: '[^\.]+'
+        ANY: '.*'
+      if: 'ctx?.file?.name != null && ctx?.file?.name != ""'
+
+  - set:
+      field: user
+      copy_from: source.user
+      if: "ctx?.source?.user != null"
+
+  - append:
+      field: related.user
+      allow_duplicates: false
+      value: "{{client.user.name}}"
+      if: "ctx?.client?.user?.name != null"
+
+  - append:
+      field: related.user
+      allow_duplicates: false
+      value: "{{source.user.name}}"
+      if: "ctx?.source?.user?.name != null"
+
+  - append:
+      field: related.user
+      allow_duplicates: false
+      value: "{{server.user.name}}"
+      if: "ctx?.server?.user?.name != null"
+
+  - append:
+      field: related.user
+      allow_duplicates: false
+      value: "{{destination.user.name}}"
+      if: "ctx?.destination?.user?.name != null"
+
+  - append:
+      field: related.user
+      allow_duplicates: false
+      value: "{{url.username}}"
+      if: "ctx?.url?.username != null && ctx?.url?.username != ''"
+
+  - append:
+      field: related.hash
+      allow_duplicates: false
+      value: "{{panw.panos.file.hash}}"
+      if: "ctx?.panw?.panos?.file?.hash != null"
+
+  - append:
+      field: related.hosts
+      allow_duplicates: false
+      value: "{{observer.hostname}}"
+      if: "ctx?.observer?.hostname != null && ctx.observer?.hostname != ''"
+
+  - append:
+      field: related.hosts
+      allow_duplicates: false
+      value: "{{host.name}}"
+      if: "ctx?.host?.name != null && ctx.host?.name != ''"
+
+  - append:
+      field: related.hosts
+      allow_duplicates: false
+      value: "{{url.domain}}"
+      if: "ctx?.url?.domain != null && ctx.url?.domain != ''"
+
+  # Remove temporary fields.
+  - remove:
+      field:
+        - _temp_
+      ignore_missing: true
+
+  # Remove NAT fields when translation was not done.
+  - remove:
+      field:
+        - source.nat.ip
+        - source.nat.port
+        - client.nat.ip
+        - client.nat.port
+      if: 'ctx?.source?.nat?.ip == "0.0.0.0" && ctx?.source?.nat?.port == 0'
+  - remove:
+      field:
+        - destination.nat.ip
+        - destination.nat.port
+        - server.nat.ip
+        - server.nat.port
+      if: 'ctx?.destination?.nat?.ip == "0.0.0.0" && ctx?.destination?.nat?.port == 0'
+>>>>>>> 3a81d81b7 ([Filebeat] Add HIP Match logs to Palo Alto Module (#25686))
 
 on_failure:
   - set:

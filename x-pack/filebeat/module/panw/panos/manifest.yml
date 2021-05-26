@@ -21,7 +21,17 @@ var:
     default:
       - untrust
 
+<<<<<<< HEAD
 ingest_pipeline: ingest/pipeline.yml
+=======
+ingest_pipeline:
+  - ingest/pipeline.yml
+  - ingest/traffic.yml
+  - ingest/threat.yml
+  - ingest/globalprotect.yml
+  - ingest/userid.yml
+  - ingest/hipmatch.yml
+>>>>>>> 3a81d81b7 ([Filebeat] Add HIP Match logs to Palo Alto Module (#25686))
 input: config/input.yml
 
 requires.processors:
