@@ -1,0 +1,12 @@
+filebeat.inputs:
+  - type: stdin
+    multiline.type: pattern
+    multiline.pattern: '^# Time: '
+    multiline.negate: true
+    multiline.match: after
+
+output.console:
+  pretty: true
+
+logging.level: info
+logging.metrics.enabled: false
