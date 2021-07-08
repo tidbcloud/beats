@@ -15,17 +15,49 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package console
+package tidb_slow_query
 
-import "github.com/elastic/beats/v7/libbeat/outputs/codec"
+import (
+	"time"
+)
 
 type Config struct {
-	Codec codec.Config `config:"codec"`
+	// connections
+	Host     string        `config:"host"`
+	Port     int           `config:"port"`
+	User     string        `config:"user"`
+	Password string        `config:"password"`
+	Database string        `config:"database"`
+	Timeout  time.Duration `config:"timeout"`
 
-	// old pretty settings to use if no codec is configured
-	Pretty bool `config:"pretty"`
+	// retry
+	MaxRetries int     `config:"max_retries"`
+	Backoff    Backoff `config:"backoff"`
 
-	BatchSize int
+	// sql range partition
+	Partition Partition `config:"partition"`
 }
 
-var defaultConfig = Config{}
+type Backoff struct {
+	Init time.Duration
+	Max  time.Duration
+}
+
+type Partition struct {
+	Retention int
+	RollStep  int
+}
+
+var defaultConfig = Config{
+	Port:       4000,
+	Timeout:    10 * time.Second,
+	MaxRetries: 3,
+	Backoff: Backoff{
+		Init: 1 * time.Second,
+		Max:  10 * time.Second,
+	},
+	Partition: Partition{
+		Retention: 365,
+		RollStep:  3,
+	},
+}

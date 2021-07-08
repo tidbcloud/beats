@@ -104,13 +104,14 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 			}
 		}
 	}
+	event.Fields.Update(extractedKV)
 	p.log.Debug("extracted K-Vs", extractedKV.StringToPrint())
 
 	// extract the last line as Statement
-	extractedKV.Put("Statement", lines[2])
+	event.PutValue("Statement", lines[len(lines)-1])
 
 	// extract timestamp
-	t0, err := extractedKV.GetValue("Time")
+	t0, err := event.GetValue("Time")
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +119,9 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.log.Debug("extracted timestamp", t0)
+	event.Timestamp = t1
+	event.PutValue("Time", t1)
+	p.log.Debug("extracted timestamp", t1)
 
 	// decode plan
 	p0, err := extractedKV.GetValue("Plan")
@@ -129,11 +132,10 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 	if err != nil {
 		return nil, err
 	}
+	event.PutValue("Plan", p1)
+	p.log.Debug("decode plan", p1)
 
-	event.Timestamp = t1
-	event.Fields.Update(extractedKV)
-	event.Fields.Delete("message")
-	event.Fields.Put("Plan", p1)
+	event.Delete("message")
 	p.log.Debug("final event", event)
 
 	return event, nil
