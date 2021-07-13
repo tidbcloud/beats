@@ -4,6 +4,7 @@ filebeat.inputs:
     multiline.pattern: '^# Time: '
     multiline.negate: true
     multiline.match: after
+    multiline.timeout: 1s
 
 processors:
   - tidb_slow_query:
