@@ -46,5 +46,6 @@ func makeTiDB(
 	if err != nil {
 		return outputs.Fail(err)
 	}
-	return outputs.Success(batchSize, config.MaxRetries, c)
+	backC := newBackoffClient(c, config.Backoff.Init, config.Backoff.Max)
+	return outputs.Success(batchSize, config.MaxRetries, backC)
 }

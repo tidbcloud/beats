@@ -1,0 +1,27 @@
+filebeat.inputs:
+  - type: stdin
+    multiline.type: pattern
+    multiline.pattern: '^# Time: '
+    multiline.negate: true
+    multiline.match: after
+
+processors:
+  - tidb_slow_query:
+
+output.tidb_slow_query:
+  host: localhost
+  port: 4000
+  user: root
+  password: ""
+  database: test
+  timeout: 60s
+  max_retries: 3
+  backoff:
+    init: 1s
+    max: 10s
+  partition:
+    retention: 365
+    roll_step: 3
+
+logging.level: info
+logging.metrics.enabled: false
