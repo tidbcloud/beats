@@ -32,8 +32,10 @@ import (
 )
 
 const (
-	logName  = "processor.tidb_slow_query"
-	maxNumKV = 100
+	logName           = "processor.tidb_slow_query"
+	maxNumKV          = 100
+	slowLogPlanPrefix = "tidb_decode_plan('"
+	slowLogPlanSuffix = "')"
 )
 
 var kvPat = regexp.MustCompile(`(\S+): (\S+)`)
@@ -83,7 +85,28 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 		return nil, errors.Errorf("slow query log must contain Time and Statement lines: %v", lines)
 	}
 
-	// parse k-v
+	_, err = p.parseKVAndUpdateFields(event, lines)
+	if err != nil {
+		return nil, err
+	}
+
+	event.PutValue("Query", lines[len(lines)-1])
+
+	if err := p.extractTimestamp(event); err != nil {
+		return nil, err
+	}
+
+	if err := p.trimPlan(event); err != nil {
+		return nil, err
+	}
+
+	event.Delete("message")
+	p.log.Debug("final event", event)
+
+	return event, nil
+}
+
+func (p processor) parseKVAndUpdateFields(event *beat.Event, lines []string) (common.MapStr, error) {
 	extractedKV := common.MapStr(make(map[string]interface{}, maxNumKV))
 	for i := 0; i < len(lines)-1; i++ {
 		matches := kvPat.FindAllStringSubmatch(lines[i], -1)
@@ -106,37 +129,41 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 	}
 	event.Fields.Update(extractedKV)
 	p.log.Debug("extracted K-Vs", extractedKV.StringToPrint())
+	return extractedKV, nil
+}
 
-	// extract the last line as Statement
-	event.PutValue("Statement", lines[len(lines)-1])
-
+func (p *processor) extractTimestamp(event *beat.Event) error {
 	// extract timestamp
 	t0, err := event.GetValue("Time")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	t1, err := time.Parse(time.RFC3339Nano, t0.(string))
 	if err != nil {
-		return nil, err
+		return err
 	}
 	event.Timestamp = t1
 	event.PutValue("Time", t1)
 	p.log.Debug("extracted timestamp", t1)
+	return nil
+}
 
-	// decode plan
-	p0, err := extractedKV.GetValue("Plan")
+func (p *processor) trimPlan(event *beat.Event) error {
+	p0, err := event.GetValue("Plan")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	p1, err := DecodePlan(p0.(string))
-	if err != nil {
-		return nil, err
+	p1, ok := p0.(string)
+	if !ok {
+		return err
 	}
-	event.PutValue("Plan", p1)
-	p.log.Debug("decode plan", p1)
-
-	event.Delete("message")
-	p.log.Debug("final event", event)
-
-	return event, nil
+	var res string
+	if len(p1) <= len(slowLogPlanPrefix)+len(slowLogPlanSuffix) {
+		res = p1
+	} else {
+		res = p1[len(slowLogPlanPrefix) : len(p1)-len(slowLogPlanSuffix)]
+	}
+	event.PutValue("Plan", res)
+	p.log.Debug("decode plan", res)
+	return nil
 }
