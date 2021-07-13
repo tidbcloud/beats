@@ -39,13 +39,13 @@ type Config struct {
 }
 
 type Backoff struct {
-	Init time.Duration
-	Max  time.Duration
+	Init time.Duration `config:"init"`
+	Max  time.Duration `config:"max"`
 }
 
 type Partition struct {
-	Retention int
-	RollStep  int
+	Retention int `config:"retention"`
+	RollStep  int `config:"roll_step"`
 }
 
 var defaultConfig = Config{

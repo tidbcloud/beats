@@ -5,6 +5,9 @@ filebeat.inputs:
     multiline.negate: true
     multiline.match: after
 
+processors:
+  - tidb_slow_query:
+
 output.console:
   pretty: true
 
