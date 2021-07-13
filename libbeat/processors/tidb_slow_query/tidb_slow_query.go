@@ -78,7 +78,7 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 	m1 := m0.(string)
 	p.log.Debug("raw message", m1)
 
-	lines := strings.Split(m1, "\\n")
+	lines := strings.Split(m1, "\n")
 	p.log.Debug("split lines", lines)
 
 	if len(lines) < 3 {
@@ -118,11 +118,19 @@ func (p processor) parseKVAndUpdateFields(event *beat.Event, lines []string) (co
 			k, v := match[1], match[2]
 			p.log.Debug("each k", k, "each v", v)
 			if len(k) > 0 && len(v) > 0 {
-				num, err := strconv.ParseFloat(v, 64)
+				b, err := strconv.ParseBool(v)
 				if err == nil {
-					extractedKV.Put(k, num)
+					// could be a bool
+					extractedKV.Put(k, b)
 				} else {
-					extractedKV.Put(k, v)
+					num, err := strconv.ParseFloat(v, 64)
+					if err == nil {
+						// could be a number
+						extractedKV.Put(k, num)
+					} else {
+						// default to string
+						extractedKV.Put(k, v)
+					}
 				}
 			}
 		}
