@@ -80,16 +80,23 @@ var (
 		"Rocksdb_block_read_count":      "double",
 		"Rocksdb_block_read_byte":       "double",
 	}
-	zone, _ = time.LoadLocation("Asia/Shanghai")
+	orderedColumn = make([]string, 0, len(slowQuerySQLType))
+	zone, _       = time.LoadLocation("Asia/Shanghai")
 )
+
+func init() {
+	for k := range slowQuerySQLType {
+		orderedColumn = append(orderedColumn, k)
+	}
+}
 
 const dateFormat = "2006-01-02"
 
 func insertStmt(schema, table string) string {
-	cols := make([]string, 0, len(slowQuerySQLType))
-	args := make([]string, 0, len(slowQuerySQLType))
-	for k := range slowQuerySQLType {
-		cols = append(cols, k)
+	cols := make([]string, 0, len(orderedColumn))
+	args := make([]string, 0, len(orderedColumn))
+	for _, c := range orderedColumn {
+		cols = append(cols, quote(c))
 		args = append(args, "?")
 	}
 	buf := new(bytes.Buffer)
@@ -104,16 +111,16 @@ func insertStmt(schema, table string) string {
 }
 
 // add an extra auto_random id column
-func createTableStmt(schema, table string, lessThanPartitions ...time.Time) string {
+func createTableStmt(schema, table string, lessThanPartitions []time.Time) string {
 	buf := new(bytes.Buffer)
 	buf.WriteString(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (", quote(schema), quote(table)))
-	buf.WriteString("`id` bigint(20) unsigned not null AUTO_RANDOM,")
+	buf.WriteString("`id` bigint(20) unsigned not null AUTO_INCREMENT,")
 	for k, v := range slowQuerySQLType {
-		buf.WriteString(fmt.Sprintf("%s %s,", k, v))
+		buf.WriteString(fmt.Sprintf("%s %s,", quote(k), v))
 	}
-	buf.WriteString("PRIMARY KEY (`id`)")
+	buf.WriteString("PRIMARY KEY (`id`,`Time`)")
 	buf.WriteString(") ")
-	buf.WriteString("PARTITION BY RANGE (UNIX_TIMESTAMP(`Time`)) (")
+	buf.WriteString("PARTITION BY RANGE (FLOOR(UNIX_TIMESTAMP(`Time`))) (")
 	for _, p := range lessThanPartitions {
 		unix := p.Unix()
 		buf.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d),", partName(p), unix))
@@ -124,6 +131,17 @@ func createTableStmt(schema, table string, lessThanPartitions ...time.Time) stri
 	}
 	buf.WriteString(");")
 	return buf.String()
+}
+
+func calculateLessThanPartitionBoundary(t time.Time, step int) []time.Time {
+	parts := make([]time.Time, 0, step)
+	// ensure start of the day at +8:00 timezone
+	y, m, d := t.In(zone).Date()
+	round := time.Date(y, m, d, 0, 0, 0, 0, zone)
+	for i := 1; i <= step; i++ {
+		parts = append(parts, round.Add(time.Duration(i)*24*time.Hour))
+	}
+	return parts
 }
 
 func getPartitionStmt(schema, table string) string {
@@ -165,7 +183,7 @@ func dropPartitionStmt(schema, table string, lessThanPartitions []string) string
 
 func partName(t time.Time) string {
 	date := t.In(zone).Format(dateFormat)
-	return "p" + date
+	return quote("p" + date)
 }
 
 func quote(word string) string {

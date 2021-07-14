@@ -13,9 +13,9 @@ output.tidb_slow_query:
   host: localhost
   port: 4000
   user: root
-  password: ""
+  password:
   database: test
-  timeout: 60s
+  timeout: 60000s
   max_retries: 3
   backoff:
     init: 1s
