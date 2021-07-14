@@ -68,7 +68,7 @@ func newClient(
 func (c *client) Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
-	if c.conn != nil && c.conn.PingContext(ctx) != nil {
+	if c.conn != nil && c.conn.PingContext(ctx) == nil {
 		return nil
 	}
 	conn, err := c.db.Conn(ctx)
@@ -99,12 +99,13 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	}
 
 	// get driver statement
-	ok := c.stmtCache.Contains(table)
-	if !ok {
+	if !c.stmtCache.Contains(table) {
 		sqlString := insertStmt(c.database, table)
 		s, err := c.conn.PrepareContext(ctx, sqlString)
-		if err := c.handleMysqlErr(err, ctx, batch, table, event); err != nil {
-			return err
+		if err != nil {
+			newErr := c.handleInsertError(err, ctx, table, event)
+			batch.RetryEvents(batch.Events())
+			return newErr
 		}
 		c.stmtCache.Add(table, s)
 	}
@@ -115,8 +116,10 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 
 	// execute statement
 	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields...)
-	if err := c.handleMysqlErr(executionErr, ctx, batch, table, event); err != nil {
-		return err
+	if executionErr != nil {
+		newErr := c.handleInsertError(executionErr, ctx, table, event)
+		batch.RetryEvents(batch.Events())
+		return newErr
 	}
 
 	c.observer.NewBatch(1)
@@ -124,32 +127,36 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	return nil
 }
 
-// handle no-table-or-partition error, retry batch, then throw the error again
-func (c *client) handleMysqlErr(err error, ctx context.Context, batch publisher.Batch, table string, event publisher.Event) error {
+// handle no-table-or-partition error -- create them
+// re-throw other unexpected error
+func (c *client) handleInsertError(err error, ctx context.Context, table string, event publisher.Event) error {
 	if err == nil {
 		return nil
 	}
 
+	// delete corrupted cached stmt
+	c.stmtCache.Remove(table)
+
+	// connection will corrupt when error occurs
+	// try to reconnect
+	if err := c.Connect(); err != nil {
+		return err
+	}
+
 	mysqlErr, ok := err.(*mysql.MySQLError)
-	// if not MySQLError, retry without table/partition creation
 	if !ok {
-		batch.RetryEvents(batch.Events())
 		return err
 	}
 
 	// create table/partition, could wait for a while
-	newErr := err
 	switch mysqlErr.Number {
 	case noPartition:
-		newErr = c.createPartitions(ctx, table, event.Content.Timestamp)
+		return c.createPartitions(ctx, table, event.Content.Timestamp)
 	case noTable:
-		newErr = c.createTable(ctx, table, event.Content.Timestamp)
+		return c.createTable(ctx, table, event.Content.Timestamp)
 	default:
-		// ignore other error number
+		return mysqlErr
 	}
-
-	batch.RetryEvents(batch.Events())
-	return newErr
 }
 
 func getFields(event publisher.Event) []interface{} {
