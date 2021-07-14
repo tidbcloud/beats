@@ -93,7 +93,8 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// get table name
 	table, err := c.getClusterIDAsTableName(event)
 	if err != nil {
-		c.observer.Failed(1)
+		c.observer.Dropped(1)
+		batch.Cancelled()
 		return err
 	}
 
@@ -113,44 +114,42 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	fields := getFields(event)
 
 	// execute statement
-	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields)
-	c.observer.NewBatch(1)
+	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields...)
 	if err := c.handleMysqlErr(executionErr, ctx, batch, table, event); err != nil {
 		return err
 	}
 
+	c.observer.NewBatch(1)
 	batch.ACK()
 	return nil
 }
 
+// handle no-table-or-partition error, retry batch, then throw the error again
 func (c *client) handleMysqlErr(err error, ctx context.Context, batch publisher.Batch, table string, event publisher.Event) error {
-	if err != nil {
-		c.observer.Failed(1)
-
-		mysqlErr, ok := err.(*mysql.MySQLError)
-		if !ok {
-			batch.RetryEvents(batch.Events())
-			return err
-		}
-
-		// create table/partition, could wait for a while
-		switch mysqlErr.Number {
-		case noPartition:
-			if err := c.createPartitions(ctx, table, event.Content.Timestamp); err != nil {
-				return err
-			}
-		case noTable:
-			if err := c.createTable(ctx, table, event.Content.Timestamp); err != nil {
-				return err
-			}
-		default:
-			// ignore other error number
-		}
-
-		// after table/partition creation, retry insert
-		batch.RetryEvents(batch.Events())
+	if err == nil {
+		return nil
 	}
-	return nil
+
+	mysqlErr, ok := err.(*mysql.MySQLError)
+	// if not MySQLError, retry without table/partition creation
+	if !ok {
+		batch.RetryEvents(batch.Events())
+		return err
+	}
+
+	// create table/partition, could wait for a while
+	newErr := err
+	switch mysqlErr.Number {
+	case noPartition:
+		newErr = c.createPartitions(ctx, table, event.Content.Timestamp)
+	case noTable:
+		newErr = c.createTable(ctx, table, event.Content.Timestamp)
+	default:
+		// ignore other error number
+	}
+
+	batch.RetryEvents(batch.Events())
+	return newErr
 }
 
 func getFields(event publisher.Event) []interface{} {
