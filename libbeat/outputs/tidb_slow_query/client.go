@@ -17,8 +17,10 @@ import (
 const (
 	// 2000 clusters
 	insertStmtCacheSize = 2000
-	noPartition         = 1146
-	noTable             = 1526
+	noTable             = 1146
+	noPartition         = 1526
+	clusterIDFieldKey   = "kubernetes.namespace"
+	noClusterID         = "no_cluster_id"
 )
 
 type client struct {
@@ -89,7 +91,7 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	event := batch.Events()[0]
 
 	// get table name
-	table, err := getClusterIDAsTableName(event)
+	table, err := c.getClusterIDAsTableName(event)
 	if err != nil {
 		c.observer.Failed(1)
 		return err
@@ -100,8 +102,7 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	if !ok {
 		sqlString := insertStmt(c.database, table)
 		s, err := c.conn.PrepareContext(ctx, sqlString)
-		if err != nil {
-			c.observer.Failed(1)
+		if err := c.handleMysqlErr(err, ctx, batch, table, event); err != nil {
 			return err
 		}
 		c.stmtCache.Add(table, s)
@@ -114,14 +115,22 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// execute statement
 	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields)
 	c.observer.NewBatch(1)
+	if err := c.handleMysqlErr(executionErr, ctx, batch, table, event); err != nil {
+		return err
+	}
 
-	if executionErr != nil {
+	batch.ACK()
+	return nil
+}
+
+func (c *client) handleMysqlErr(err error, ctx context.Context, batch publisher.Batch, table string, event publisher.Event) error {
+	if err != nil {
 		c.observer.Failed(1)
 
-		mysqlErr, ok := executionErr.(*mysql.MySQLError)
+		mysqlErr, ok := err.(*mysql.MySQLError)
 		if !ok {
 			batch.RetryEvents(batch.Events())
-			return executionErr
+			return err
 		}
 
 		// create table/partition, could wait for a while
@@ -140,47 +149,38 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 
 		// after table/partition creation, retry insert
 		batch.RetryEvents(batch.Events())
-		return mysqlErr
 	}
-	batch.ACK()
 	return nil
 }
 
 func getFields(event publisher.Event) []interface{} {
-	r := make([]interface{}, 0, len(slowQuerySQLType))
-	for k := range slowQuerySQLType {
+	r := make([]interface{}, 0, len(orderedColumn))
+	for _, c := range orderedColumn {
 		// expect nil if fields not exist
-		v, _ := event.Content.GetValue(k)
+		v, _ := event.Content.GetValue(c)
 		r = append(r, v)
 	}
 	return r
 }
 
-func getClusterIDAsTableName(event publisher.Event) (string, error) {
-	// label path: kubernetes.labels.tidb.pingcap.com/cluster-id=xxxx
-	v, err := event.Content.GetValue("kubernetes.labels.tidb.pingcap.com/cluster-id")
+func (c *client) getClusterIDAsTableName(event publisher.Event) (string, error) {
+	v, err := event.Content.GetValue(clusterIDFieldKey)
 	if err != nil {
-		return "", err
+		c.log.Warn("get cluster id as table name failed ", err)
+		v = noClusterID
 	}
 	tableName, ok := v.(string)
 	if !ok {
-		return "", fmt.Errorf("the value of kubernetes.labels.tidb.pingcap.com/cluster-id must be string")
+		return "", fmt.Errorf("the value of cluster id must be string")
 	}
 	return "cluster_" + tableName, nil
 }
 
-func calculateLessThanPartitionBoundary(t time.Time, step int) []time.Time {
-	parts := make([]time.Time, 0, step)
-	for i := 1; i <= step; i++ {
-		parts = append(parts, t.Add(time.Duration(i)*24*time.Hour))
-	}
-	return parts
-}
-
 func (c *client) createTable(ctx context.Context, table string, curTime time.Time) error {
 	parts := calculateLessThanPartitionBoundary(curTime, c.rollStep)
-	sqlString := creationPartitionStmt(c.database, table, parts)
+	sqlString := createTableStmt(c.database, table, parts)
 	_, err := c.conn.ExecContext(ctx, sqlString)
+	c.log.Info("create table ", sqlString, "error", err)
 	return err
 }
 
@@ -201,6 +201,7 @@ func (c *client) createPartitions(ctx context.Context, table string, curTime tim
 	newParts := calculateLessThanPartitionBoundary(curTime, c.rollStep)
 	createSqlString := creationPartitionStmt(c.database, table, newParts)
 	_, err = c.conn.ExecContext(ctx, createSqlString)
+	c.log.Info("create partitions ", createSqlString, "error", err)
 	return err
 }
 

@@ -76,10 +76,9 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 		return nil, err
 	}
 	m1 := m0.(string)
-	p.log.Debug("raw message", m1)
+	p.log.Debugf("raw message:\n", m1)
 
 	lines := strings.Split(m1, "\n")
-	p.log.Debug("split lines", lines)
 
 	if len(lines) < 3 {
 		return nil, errors.Errorf("slow query log must contain Time and Statement lines: %v", lines)
@@ -101,7 +100,6 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 	}
 
 	event.Delete("message")
-	p.log.Debug("final event", event)
 
 	return event, nil
 }
@@ -110,13 +108,11 @@ func (p processor) parseKVAndUpdateFields(event *beat.Event, lines []string) (co
 	extractedKV := common.MapStr(make(map[string]interface{}, maxNumKV))
 	for i := 0; i < len(lines)-1; i++ {
 		matches := kvPat.FindAllStringSubmatch(lines[i], -1)
-		p.log.Debug("each line matched and captured", matches)
 		for _, match := range matches {
 			if len(match) != 3 {
 				return nil, errors.Errorf("failed to extract kv for single match: %v", match)
 			}
 			k, v := match[1], match[2]
-			p.log.Debug("each k", k, "each v", v)
 			if len(k) > 0 && len(v) > 0 {
 				b, err := strconv.ParseBool(v)
 				if err == nil {
@@ -136,7 +132,6 @@ func (p processor) parseKVAndUpdateFields(event *beat.Event, lines []string) (co
 		}
 	}
 	event.Fields.Update(extractedKV)
-	p.log.Debug("extracted K-Vs", extractedKV.StringToPrint())
 	return extractedKV, nil
 }
 
@@ -152,7 +147,6 @@ func (p *processor) extractTimestamp(event *beat.Event) error {
 	}
 	event.Timestamp = t1
 	event.PutValue("Time", t1)
-	p.log.Debug("extracted timestamp", t1)
 	return nil
 }
 
@@ -172,6 +166,5 @@ func (p *processor) trimPlan(event *beat.Event) error {
 		res = p1[len(slowLogPlanPrefix) : len(p1)-len(slowLogPlanSuffix)]
 	}
 	event.PutValue("Plan", res)
-	p.log.Debug("decode plan", res)
 	return nil
 }
