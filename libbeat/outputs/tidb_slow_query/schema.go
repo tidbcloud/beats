@@ -146,8 +146,8 @@ func calculateLessThanPartitionBoundary(t time.Time, step int) []time.Time {
 
 func getPartitionStmt(schema, table string) string {
 	return fmt.Sprintf("SELECT `partition_name` FROM `information_schema`.`partitions` "+
-		"WHERE table_schema=\"%s\" AND table_name=\"%s\" AND `partition_name` IS NOT NULL order by `partition_name` asc",
-		quote(schema), quote(table))
+		"WHERE table_schema='%s' AND table_name='%s' AND `partition_name` IS NOT NULL order by `partition_name` asc",
+		schema, table)
 }
 
 func creationPartitionStmt(schema, table string, lessThanPartitions []time.Time) string {
