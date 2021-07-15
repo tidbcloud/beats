@@ -36,6 +36,7 @@ const (
 	maxNumKV          = 100
 	slowLogPlanPrefix = "tidb_decode_plan('"
 	slowLogPlanSuffix = "')"
+	instanceFieldKey  = "kubernetes.pod.name"
 )
 
 var kvPat = regexp.MustCompile(`(\S+): (\S+)`)
@@ -99,6 +100,10 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 		return nil, err
 	}
 
+	if err := p.extractInstance(event); err != nil {
+		return nil, err
+	}
+
 	event.Delete("message")
 
 	return event, nil
@@ -147,6 +152,19 @@ func (p *processor) extractTimestamp(event *beat.Event) error {
 	}
 	event.Timestamp = t1
 	event.PutValue("Time", t1)
+	return nil
+}
+
+func (p *processor) extractInstance(event *beat.Event) error {
+	i0, err := event.GetValue(instanceFieldKey)
+	if err != nil {
+		return err
+	}
+	i1, ok := i0.(string)
+	if !ok {
+		return err
+	}
+	event.PutValue("Instance", i1)
 	return nil
 }
 

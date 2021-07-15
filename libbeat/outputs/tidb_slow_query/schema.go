@@ -11,6 +11,7 @@ var (
 	// reference: executor/slowQueryTuple
 	// column_name: column_type
 	slowQuerySQLType = map[string]string{
+		"Instance":                      "varchar(64)",
 		"Time":                          "timestamp(6)",
 		"Txn_start_ts":                  "double",
 		"User":                          "varchar(64)",
