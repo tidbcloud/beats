@@ -20,7 +20,7 @@ const (
 	noTable             = 1146
 	noPartition         = 1526
 	clusterIDFieldKey   = "kubernetes.namespace"
-	noClusterID         = "no_cluster_id"
+	noClusterID         = "NO_CLUSTER_ID"
 )
 
 type client struct {
@@ -90,7 +90,6 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// todo: support multi events from different cluster (with different table name)
 	event := batch.Events()[0]
 
-	// get table name
 	table, err := c.getClusterIDAsTableName(event)
 	if err != nil {
 		c.observer.Dropped(1)
@@ -172,7 +171,7 @@ func getFields(event publisher.Event) []interface{} {
 func (c *client) getClusterIDAsTableName(event publisher.Event) (string, error) {
 	v, err := event.Content.GetValue(clusterIDFieldKey)
 	if err != nil {
-		c.log.Warn("get cluster id as table name failed ", err)
+		c.log.Warnf("get cluster id as table name failed: %s", err)
 		v = noClusterID
 	}
 	tableName, ok := v.(string)
