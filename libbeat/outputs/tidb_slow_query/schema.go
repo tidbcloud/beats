@@ -111,7 +111,6 @@ func insertStmt(schema, table string) string {
 	return buf.String()
 }
 
-// add an extra auto_random id column
 func createTableStmt(schema, table string, lessThanPartitions []time.Time) string {
 	buf := new(bytes.Buffer)
 	buf.WriteString(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (", quote(schema), quote(table)))
