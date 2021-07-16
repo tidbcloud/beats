@@ -82,7 +82,7 @@ var (
 		"Rocksdb_block_read_byte":       "double",
 	}
 	orderedColumn = make([]string, 0, len(slowQuerySQLType))
-	zone, _       = time.LoadLocation("Asia/Shanghai")
+	zone, _       = time.LoadLocation("UTC")
 )
 
 func init() {
