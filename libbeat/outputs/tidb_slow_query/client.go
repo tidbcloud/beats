@@ -10,8 +10,6 @@ import (
 	"github.com/go-sql-driver/mysql"
 	lru "github.com/hashicorp/golang-lru"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
