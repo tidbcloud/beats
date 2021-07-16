@@ -16,11 +16,11 @@ import (
 
 const (
 	// 2000 clusters
-	insertStmtCacheSize = 2000
-	noTable             = 1146
-	noPartition         = 1526
-	clusterIDFieldKey   = "kubernetes.namespace"
-	noClusterID         = "NO_CLUSTER_ID"
+	insertStmtCacheSize           = 2000
+	mysqlErrCodeTableNotExist     = 1146
+	mysqlErrCodePartitionNotExist = 1526
+	clusterIDFieldKey             = "kubernetes.namespace"
+	noClusterID                   = "NO_CLUSTER_ID"
 )
 
 type client struct {
@@ -149,9 +149,9 @@ func (c *client) handleInsertError(err error, ctx context.Context, table string,
 
 	// create table/partition, could wait for a while
 	switch mysqlErr.Number {
-	case noPartition:
+	case mysqlErrCodePartitionNotExist:
 		return c.createPartitions(ctx, table, event.Content.Timestamp)
-	case noTable:
+	case mysqlErrCodeTableNotExist:
 		return c.createTable(ctx, table, event.Content.Timestamp)
 	default:
 		return mysqlErr

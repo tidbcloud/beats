@@ -97,11 +97,11 @@ func insertStmt(schema, table string) string {
 	cols := make([]string, 0, len(orderedColumn))
 	args := make([]string, 0, len(orderedColumn))
 	for _, c := range orderedColumn {
-		cols = append(cols, quote(c))
+		cols = append(cols, quoteSchemaObjectIdentifier(c))
 		args = append(args, "?")
 	}
 	buf := new(bytes.Buffer)
-	buf.WriteString(fmt.Sprintf("INSERT INTO %s.%s (", quote(schema), quote(table)))
+	buf.WriteString(fmt.Sprintf("INSERT INTO %s.%s (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
 	buf.WriteString(strings.Join(cols, ","))
 	buf.WriteString(") ")
 	buf.WriteString("VALUES (")
@@ -113,10 +113,10 @@ func insertStmt(schema, table string) string {
 
 func createTableStmt(schema, table string, lessThanPartitions []time.Time) string {
 	buf := new(bytes.Buffer)
-	buf.WriteString(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (", quote(schema), quote(table)))
+	buf.WriteString(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
 	buf.WriteString("`id` bigint(20) unsigned not null AUTO_INCREMENT,")
 	for k, v := range slowQuerySQLType {
-		buf.WriteString(fmt.Sprintf("%s %s,", quote(k), v))
+		buf.WriteString(fmt.Sprintf("%s %s,", quoteSchemaObjectIdentifier(k), v))
 	}
 	buf.WriteString("PRIMARY KEY (`id`,`Time`)")
 	buf.WriteString(") ")
@@ -153,7 +153,7 @@ func getPartitionStmt(schema, table string) string {
 func creationPartitionStmt(schema, table string, lessThanPartitions []time.Time) string {
 	buf := new(bytes.Buffer)
 
-	buf.WriteString(fmt.Sprintf("ALTER TABLE %s.%s ADD PARTITION (", quote(schema), quote(table)))
+	buf.WriteString(fmt.Sprintf("ALTER TABLE %s.%s ADD PARTITION (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
 	for _, p := range lessThanPartitions {
 		unix := p.Unix()
 		buf.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d),", partName(p), unix))
@@ -169,9 +169,9 @@ func creationPartitionStmt(schema, table string, lessThanPartitions []time.Time)
 func dropPartitionStmt(schema, table string, lessThanPartitions []string) string {
 	buf := new(bytes.Buffer)
 
-	buf.WriteString(fmt.Sprintf("ALTER TABLE %s.%s drop PARTITION ", quote(schema), quote(table)))
+	buf.WriteString(fmt.Sprintf("ALTER TABLE %s.%s drop PARTITION ", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
 	for _, p := range lessThanPartitions {
-		buf.WriteString(quote(p) + ",")
+		buf.WriteString(quoteSchemaObjectIdentifier(p) + ",")
 	}
 	// delete the last ,
 	if len(lessThanPartitions) > 0 {
@@ -183,9 +183,13 @@ func dropPartitionStmt(schema, table string, lessThanPartitions []string) string
 
 func partName(t time.Time) string {
 	date := t.In(zone).Format(dateFormat)
-	return quote("p" + date)
+	return quoteSchemaObjectIdentifier("p" + date)
 }
 
-func quote(word string) string {
-	return "`" + word + "`"
+func quoteSchemaObjectIdentifier(word string) string {
+	b := strings.Builder{}
+	b.WriteString("`")
+	b.WriteString(word)
+	b.WriteString("`")
+	return b.String()
 }
