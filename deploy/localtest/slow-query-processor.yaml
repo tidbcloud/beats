@@ -12,5 +12,6 @@ processors:
 output.console:
   pretty: true
 
+path.home: ./__local_home
 logging.level: info
 logging.metrics.enabled: false

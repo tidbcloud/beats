@@ -176,7 +176,7 @@ func (c *client) getClusterIDAsTableName(event publisher.Event) (string, error) 
 	if !ok {
 		return "", fmt.Errorf("the value of cluster id must be string")
 	}
-	return "cluster_" + tableName, nil
+	return tableName, nil
 }
 
 func (c *client) createTable(ctx context.Context, table string, curTime time.Time) error {

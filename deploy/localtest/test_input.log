@@ -1,0 +1,983 @@
+# Time: 2021-05-21T05:31:16.126095033Z
+# Txn_start_ts: 425086171477704705
+# Query_time: 20.123321704
+# Parse_time: 0.000060373
+# Compile_time: 0.000057217
+# Is_internal: true
+# Digest: 0088778028432d7b95866d3ea9d06bada596e925a818f7b013dd64929d5e05ad
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('N9gwCTM2XzEJMAkxCXRhYmxlOnN0YXRzX21ldGEsIGluZGV4OnRibCh0YWJsZV9pZCksIGxvY2sK')
+# Plan_digest: c1ddab38a2f4d02ea3cdd8fe485ec6bd2596fb8277a60b976871fd4de383d711
+update mysql.stats_meta set version = 425086171477704705, count = count + 0, modify_count = modify_count + 1 where table_id = 51;
+# Time: 2021-05-21T05:32:00.467308824Z
+# Txn_start_ts: 425086181648891905
+# Query_time: 25.649359714
+# Parse_time: 0.000063524
+# Compile_time: 0.000037466
+# Is_internal: true
+# Digest: 7d757d38b465483f07a597132f3a973125e78d6db2f42a0d1d8c7c0ec575f500
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('XsAwCTM4XzEJMAkzCXRhYmxlOkdMT0JBTF9WQVJJQUJMRVMsIGluZGV4OlBSSU1BUlkoERmQX05BTUUpLCBrZWVwIG9yZGVyOmZhbHNlLCBkZXNjOmZhbHNlCg==')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select variable_name, variable_value from mysql.global_variables where variable_name in ('tidb_auto_analyze_ratio', 'tidb_auto_analyze_start_time', 'tidb_auto_analyze_end_time');
+# Time: 2021-05-21T05:32:00.790999365Z
+# Txn_start_ts: 425086181766856705
+# Query_time: 25.503104236
+# Parse_time: 0.000194899
+# Compile_time: 0.000367044
+# Cop_time: 25.500627275 Backoff_time: 25.463 Request_count: 1 Total_keys: 1
+# Index_names: [bind_info:time_index]
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_backoff_regionMiss_total_times: 18 Cop_backoff_regionMiss_total_time: 5.51
+# Cop_backoff_tikvRPC_total_times: 18 Cop_backoff_tikvRPC_total_time: 19.953
+# Mem_max: 31428
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:32:01.277254583Z
+# Txn_start_ts: 425086184650440705
+# Query_time: 15.000523215
+# Parse_time: 0.000127913
+# Compile_time: 0.0000442
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-05-21T05:32:01.475525388Z
+# Txn_start_ts: 425086187547131906
+# Query_time: 4.136827295
+# Parse_time: 0.00004417
+# Compile_time: 0.000180974
+# Cop_time: 4.134605731 Backoff_time: 4.121 Request_count: 2 Total_keys: 5 Process_keys: 2
+# Index_names: [stats_meta:idx_ver]
+# Is_internal: true
+# Digest: f0b4536b9ca2b2cf8b0b4580fa5a6804ace888b4601ce93f17b17f18409e96f0
+# Stats: stats_meta:pseudo
+# Num_cop_tasks: 2
+# Cop_proc_avg: 0 Cop_proc_p90: 0 Cop_proc_max: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_p90: 0 Cop_wait_max: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_backoff_regionMiss_total_times: 6 Cop_backoff_regionMiss_total_time: 0.126 Cop_backoff_regionMiss_max_time: 0.126 Cop_backoff_regionMiss_max_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160 Cop_backoff_regionMiss_avg_time: 0.126 Cop_backoff_regionMiss_p90_time: 0.126
+# Cop_backoff_tikvRPC_total_times: 6 Cop_backoff_tikvRPC_total_time: 3.995 Cop_backoff_tikvRPC_max_time: 3.995 Cop_backoff_tikvRPC_max_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160 Cop_backoff_tikvRPC_avg_time: 3.995 Cop_backoff_tikvRPC_p90_time: 3.995
+# Mem_max: 23464
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('+QI0MAkzXzE4CTAJMzMzMy4BBREBbDUJbXlzcWwuc3RhdHNfbWV0YS52ZXJzaW9uLCBCGgAcdGFibGVfaWRKGwAsbW9kaWZ5X2NvdW50Sh8ABRgcCjEJMzBfMTdWiAAoCjIJMTNfMTUJMQkBnTqmAAV7ADoZpjwsIGluZGV4OmlkeF92ZXIoDbXwQCksIHJhbmdlOig0MjUwODYxMTg4NTIyOTY3MDYsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAYYMMF8xNp6GAABrGU1MZmFsc2UsIHN0YXRzOnBzZXVkbwo=')
+# Plan_digest: 9faf46fc9d216157e1a154e663d72b8005a139001889bfb1d49d7eca3cfb2341
+SELECT version, table_id, modify_count, count from mysql.stats_meta where version > 425086118852296706 order by version;
+# Time: 2021-05-21T05:32:01.641096478Z
+# Txn_start_ts: 425086187324309505
+# Query_time: 5.164855993
+# Parse_time: 0.000063128
+# Compile_time: 0.000184248
+# Cop_time: 5.162545727 Backoff_time: 5.148 Request_count: 1 Total_keys: 1
+# Is_internal: true
+# Digest: 16e7ac941a71c9c110e4ef0b2a3be61537fb4e890c78d99a4ccd1fce5d8f240e
+# Stats: stats_feedback:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_backoff_regionMiss_total_times: 7 Cop_backoff_regionMiss_total_time: 0.254
+# Cop_backoff_tikvRPC_total_times: 7 Cop_backoff_tikvRPC_total_time: 4.894
+# Mem_max: 13047
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('5gLIMAkxNF80CTAJMTAwMDAJbXlzcWwuc3RhdHNfZmVlZGJhY2sudGFibGVfaWQ6YXNjLCBtTiMADGhpc3R2IgBEaXNfaW5kZXg6YXNjCjEJM182lnUAACxycQBaHgARbVofABHaGAoyCTMxXzgViRRkYXRhOlQB7kxGdWxsU2Nhbl83CjMJMTBfNwkxCSkiAHQBHwA6NiIBgCwga2VlcCBvcmRlcjpmYWxzZSwgc3RhdHM6cHNldWRvCg==')
+# Plan_digest: 772ad4bc8c3f15b2c2d4446cff413b58aae970aaccc150c438ccc7229515c236
+select table_id, hist_id, is_index, feedback from mysql.stats_feedback order by table_id, hist_id, is_index;
+# Time: 2021-06-03T01:58:47.176495509Z
+# Txn_start_ts: 425377274836811777
+# User: central@10.0.167.131
+# Conn_ID: 172395
+# Query_time: 0.642766887
+# Parse_time: 0.000016195
+# Compile_time: 0.000032411
+# DB: dbaas
+# Is_internal: false
+# Digest: 9a4170a059f3113e196bdac9c156d6cecf3ccbef8eb238b878d04e61aa7d9741
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+START TRANSACTION;
+# Time: 2021-06-07T07:51:15.802769749Z
+# Txn_start_ts: 0
+# User: central@10.0.167.131
+# Conn_ID: 217061
+# Query_time: 41.923633939
+# Parse_time: 0.000013764
+# Compile_time: 0.000029274
+# DB: dbaas
+# Is_internal: false
+# Digest: 9a4170a059f3113e196bdac9c156d6cecf3ccbef8eb238b878d04e61aa7d9741
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+START TRANSACTION;
+# Time: 2021-06-07T07:51:16.802902665Z
+# Txn_start_ts: 0
+# User: central@10.0.167.131
+# Conn_ID: 217060
+# Query_time: 41.430907944
+# Parse_time: 0.000016587
+# Compile_time: 0.000027768
+# DB: dbaas
+# Is_internal: false
+# Digest: 9a4170a059f3113e196bdac9c156d6cecf3ccbef8eb238b878d04e61aa7d9741
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+START TRANSACTION;
+# Time: 2021-06-07T07:51:17.803475212Z
+# Txn_start_ts: 0
+# Query_time: 33.411994394
+# Parse_time: 0.000241475
+# Compile_time: 0.000040796
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-06-07T07:51:17.803480735Z
+# Txn_start_ts: 0
+# Query_time: 42.512787123
+# Parse_time: 0.000037344
+# Compile_time: 0.00002269
+# Is_internal: true
+# Digest: 7d757d38b465483f07a597132f3a973125e78d6db2f42a0d1d8c7c0ec575f500
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('XsAwCTM4XzEJMAkzCXRhYmxlOkdMT0JBTF9WQVJJQUJMRVMsIGluZGV4OlBSSU1BUlkoERmQX05BTUUpLCBrZWVwIG9yZGVyOmZhbHNlLCBkZXNjOmZhbHNlCg==')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select variable_name, variable_value from mysql.global_variables where variable_name in ('tidb_auto_analyze_ratio', 'tidb_auto_analyze_start_time', 'tidb_auto_analyze_end_time');
+# Time: 2021-06-07T07:51:17.803732868Z
+# Txn_start_ts: 0
+# Query_time: 42.576316842
+# Parse_time: 0.000078617
+# Compile_time: 0.000266254
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-06-07T07:51:18.803456136Z
+# Txn_start_ts: 0
+# User: central@10.0.167.131
+# Conn_ID: 217052
+# Query_time: 41.789183112
+# Parse_time: 0.000015328
+# Compile_time: 0.000027964
+# DB: dbaas
+# Is_internal: false
+# Digest: 9a4170a059f3113e196bdac9c156d6cecf3ccbef8eb238b878d04e61aa7d9741
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+START TRANSACTION;
+# Time: 2021-06-07T07:51:18.803480529Z
+# Txn_start_ts: 0
+# Query_time: 43.514151608
+# Parse_time: 0.000074823
+# Compile_time: 0.000244474
+# Is_internal: true
+# Digest: f0b4536b9ca2b2cf8b0b4580fa5a6804ace888b4601ce93f17b17f18409e96f0
+# Stats: stats_meta:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('+QI0MAkzXzE4CTAJMzMzMy4BBREBbDUJbXlzcWwuc3RhdHNfbWV0YS52ZXJzaW9uLCBCGgAcdGFibGVfaWRKGwAsbW9kaWZ5X2NvdW50Sh8ABRgcCjEJMzBfMTdWiAAoCjIJMTNfMTUJMQkBnTqmAAV7ADoZpjwsIGluZGV4OmlkeF92ZXIoDbXwSSksIHJhbmdlOig0MjU0MjI1NTQ0Nzg0MTE3NzgsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvCjIJMTBfMTYJmoYAAGsZTUxmYWxzZSwgc3RhdHM6cHNldWRvCg==')
+# Plan_digest: 9faf46fc9d216157e1a154e663d72b8005a139001889bfb1d49d7eca3cfb2341
+SELECT version, table_id, modify_count, count from mysql.stats_meta where version > 425422554478411778 order by version;
+# Time: 2021-06-07T07:51:19.80366935Z
+# Txn_start_ts: 0
+# User: central@10.0.167.131
+# Conn_ID: 217053
+# Query_time: 38.172808769
+# Parse_time: 0.00001727
+# Compile_time: 0.000030839
+# DB: dbaas
+# Is_internal: false
+# Digest: 9a4170a059f3113e196bdac9c156d6cecf3ccbef8eb238b878d04e61aa7d9741
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+START TRANSACTION;
+# Time: 2021-06-07T07:51:20.803883005Z
+# Txn_start_ts: 0
+# User: central@10.0.167.131
+# Conn_ID: 217045
+# Query_time: 35.096369982
+# Parse_time: 0.000015054
+# Compile_time: 0.000031797
+# DB: dbaas
+# Is_internal: false
+# Digest: 9a4170a059f3113e196bdac9c156d6cecf3ccbef8eb238b878d04e61aa7d9741
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+START TRANSACTION;
+# Time: 2021-06-07T07:51:21.804043356Z
+# Txn_start_ts: 0
+# Query_time: 37.513372757
+# Parse_time: 0.000008837
+# Compile_time: 0.000018208
+# Is_internal: true
+# Digest: e6f07d43b5c21db0fbb9a31feac2dc599787763393dd5acbfad80e247eb02ad5
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+begin;
+# Time: 2021-06-07T07:51:36.808370269Z
+# Txn_start_ts: 425473421292339205
+# Query_time: 15.004118176
+# Parse_time: 0.000009365
+# Compile_time: 0.000020335
+# Is_internal: true
+# Digest: e6f07d43b5c21db0fbb9a31feac2dc599787763393dd5acbfad80e247eb02ad5
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+begin;
+# Time: 2021-06-07T07:51:36.80991858Z
+# Txn_start_ts: 425473421292339204
+# Query_time: 19.006017623
+# Parse_time: 0.000081418
+# Compile_time: 0.000302482
+# Cop_time: 0.001432914 Request_count: 1 Total_keys: 1
+# Index_names: [bind_info:time_index]
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Mem_max: 31428
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-06-07T07:51:37.169504862Z
+# Txn_start_ts: 425473421384089603
+# Query_time: 19.36102156
+# Parse_time: 0.00010954
+# Compile_time: 0.000028311
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-06-07T07:51:38.371867463Z
+# Txn_start_ts: 425473421698662401
+# Query_time: 7.854269064
+# Parse_time: 0.000211918
+# Compile_time: 0.000276619
+# Cop_time: 0.001388645 Request_count: 1 Total_keys: 5 Process_keys: 4
+# Is_internal: true
+# Digest: 82fd68ff81d8bbd0683682eba6c581111b721f3e4c7a24ae8b5dcb5cabeaa911
+# Stats: user:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Mem_max: 131560
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('tgd4MAkzXzMJMAkxMDAwMAlteXNxbC51c2VyLmhvc3QsIB0RARYyEQBQYXV0aGVudGljYXRpb25fc3RyaW5nMiIALGV4ZWN1dGVfcHJpdjIZADhjcmVhdGVfdG1wX3RhYmxKIgAEZmlOFgAMZHJvcEZOABBncmFudEYXACRyZWZlcmVuY2VzRhwAEGFsdGVyRhcAEGluZGV4RhcACS4Ucm91dGluSqwACGV2ZU6AABxzaHV0ZG93bkZQABhwcm9jZXNzRhkAFGNvbmZpZ0oYACkwBHVzTrUAIHNob3dfdmlld2I4AARyb05NAQ1VYtcAEHNlbGVjSlgBEHRyaWdnTokAJZ5ybABCCQIIc3VwTkoABdMEZGJGMAAMbG9ja0kzTj4BKSZWCwEMZGVsZU6LAgh1cGRBi0KaABRyZWxvYWRGGAAQaW5zZXJKFgEcYWNjb3VudF8BoiBlZAoxCTMxXzV1WRRkYXRhOlRB60hGdWxsU2Nhbl80CjIJMTBfNAkxbX0AdAEfADoh5IAsIGtlZXAgb3JkZXI6ZmFsc2UsIHN0YXRzOnBzZXVkbwo=')
+# Plan_digest: 0ab0d4afb87469ce17218bae019dd74d514f3be0a1bed2fb0370aed13d883a81
+select HIGH_PRIORITY Host,User,authentication_string,Execute_priv, Create_tmp_table_priv, File_priv, Drop_priv, Grant_priv, References_priv, Alter_priv, Index_priv, Alter_routine_priv, Event_priv, Shutdown_priv, Process_priv, Config_priv, Create_user_priv, Show_view_priv, Create_role_priv, Create_routine_priv, Select_priv, Trigger_priv, Drop_role_priv, Create_priv, Super_priv, Show_db_priv, Lock_tables_priv, Create_view_priv, Delete_priv, Update_priv, Reload_priv, Insert_priv,account_locked from mysql.user;
+# Time: 2021-06-15T06:51:32.220640506Z
+# Txn_start_ts: 425653670078054401
+# User: central@10.0.167.131
+# Conn_ID: 300865
+# Query_time: 0.826247214
+# Parse_time: 0.000015048
+# Compile_time: 0.000282685
+# Cop_time: 0.825723909 Request_count: 1
+# DB: dbaas
+# Is_internal: false
+# Digest: 1e8eb97ca37a0894b8cd15afd9f15bd0799a88f1729ad212054008c7920fcc02
+# Stats: clusters:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Mem_max: 5839
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('5wI4MAkxXzUJMAkwLjAwMjQwMgEAsDIJbm90KGVxKGRiYWFzLmNsdXN0ZXJzLnN0YXR1cywgImNsZWFyZWQiKSksIAErDGluKGRaKwAkZGVsZXRlZCIsIA0LDGNvbXABEwAiij0ALGluaXRpYWxpemluZwFCFHByZXBhcg0NFGxhdW5jaAENJCkpCjEJMzFfOAkJ0GQzCWRhdGE6U2VsZWN0aW9uXzcKMgkxXzcJMQXvCDMJZULbAHx0ZW5hbnRfaWQsIDEpCjMJMTBfNgkxCTMJdGFibGU6Yy0DwCwgcmFuZ2U6WzAsK2luZl0sIGtlZXAgb3JkZXI6ZmFsc2UsIHN0YXRzOnBzZXVkbwo=')
+# Plan_digest: 6195614bb4a756bb9e978eafd0d781d5cadc25274dcdbd14487a05b33de045da
+SELECT * FROM `clusters` WHERE clusters.status NOT IN (?,?) AND clusters.status NOT IN (?) AND clusters.status NOT IN (?,?,?) AND tenant_id = ? [arguments: (deleted, deletecomplete, cleared, initializing, preparing, launching, 1)];
+# Time: 2021-06-28T09:45:01.508735217Z
+# Txn_start_ts: 0
+# User: central@10.0.152.239
+# Conn_ID: 438991
+# Query_time: 0.348744817
+# Parse_time: 0.000037915
+# Compile_time: 0.000044319
+# DB: dbaas
+# Is_internal: false
+# Digest: 50768fcaf688c33fc9187137f7443a2c3205510dc85dd95eeb39e94b265387e3
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+alter table backups add column `finished_at` TIMESTAMP;
+# Time: 2021-06-28T09:45:02.216513511Z
+# Txn_start_ts: 0
+# User: central@10.0.152.239
+# Conn_ID: 438991
+# Query_time: 0.355029986
+# Parse_time: 0.000043566
+# Compile_time: 0.000051985
+# DB: dbaas
+# Is_internal: false
+# Digest: 1d60886df7847161fbc537b0cce1a54938e28ae0f66c46ad798154b2a78dfacf
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+alter table clusters add column poc_deleted bool DEFAULT false;
+# Time: 2021-07-18T21:08:02.643649794Z
+# Txn_start_ts: 426414566958694401
+# Query_time: 0.354326632
+# Parse_time: 0.000075916
+# Compile_time: 0.000248434
+# Cop_time: 0.002670832 Request_count: 2 Total_keys: 5 Process_keys: 2
+# Index_names: [stats_meta:idx_ver]
+# Is_internal: true
+# Digest: f0b4536b9ca2b2cf8b0b4580fa5a6804ace888b4601ce93f17b17f18409e96f0
+# Stats: stats_meta:pseudo
+# Num_cop_tasks: 2
+# Cop_proc_avg: 0 Cop_proc_p90: 0 Cop_proc_max: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_p90: 0 Cop_wait_max: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Mem_max: 23464
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('+QI0MAkzXzE4CTAJMzMzMy4BBREBbDUJbXlzcWwuc3RhdHNfbWV0YS52ZXJzaW9uLCBCGgAcdGFibGVfaWRKGwAsbW9kaWZ5X2NvdW50Sh8ABRgcCjEJMzBfMTdWiAAoCjIJMTNfMTUJMQkBnTqmAAV7ADoZpjwsIGluZGV4OmlkeF92ZXIoDbXwQCksIHJhbmdlOig0MjYxNDY4MjY4Nzg5NzYwMDMsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAYYMMF8xNp6GAABrGU1MZmFsc2UsIHN0YXRzOnBzZXVkbwo=')
+# Plan_digest: 9faf46fc9d216157e1a154e663d72b8005a139001889bfb1d49d7eca3cfb2341
+SELECT version, table_id, modify_count, count from mysql.stats_meta where version > 426146826878976003 order by version;
+# Time: 2021-07-18T21:08:02.645038707Z
+# Txn_start_ts: 426414566958694402
+# Query_time: 0.354365934
+# Parse_time: 0.000044169
+# Compile_time: 0.000021998
+# Is_internal: true
+# Digest: 7d757d38b465483f07a597132f3a973125e78d6db2f42a0d1d8c7c0ec575f500
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('XsAwCTM4XzEJMAkzCXRhYmxlOkdMT0JBTF9WQVJJQUJMRVMsIGluZGV4OlBSSU1BUlkoERmQX05BTUUpLCBrZWVwIG9yZGVyOmZhbHNlLCBkZXNjOmZhbHNlCg==')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select variable_name, variable_value from mysql.global_variables where variable_name in ('tidb_auto_analyze_ratio', 'tidb_auto_analyze_start_time', 'tidb_auto_analyze_end_time');
+# Time: 2021-07-19T04:03:03.739203194Z
+# Txn_start_ts: 426421094540902404
+# User: central@10.0.152.239
+# Conn_ID: 737103
+# Query_time: 0.336622768
+# Parse_time: 0.000007557
+# Compile_time: 0.000361931
+# Cop_time: 0.337299487 Request_count: 2
+# DB: dbaas
+# Index_names: [clusters:name_tenant]
+# Is_internal: false
+# Digest: c51d41489a232baa88b7229d0972b9bba9ee0960114d7c01a76464e956edd4d5
+# Stats: clusters:pseudo,cluster_operations:pseudo
+# Num_cop_tasks: 2
+# Cop_proc_avg: 0 Cop_proc_p90: 0 Cop_proc_max: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_p90: 0 Cop_wait_max: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Mem_max: 3593
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('+QPwTzAJMTdfMjIJMAkwLjAwNQlpbm5lciBqb2luLCBlcXVhbDpbZXEoZGJhYXMuY2x1c3RlcnMuaWQsIGRiYWFzLmNsdXN0ZXJfb3BlcmF0aW9uGRMsaWQpXQoxCTMyXzM4DV9wNAlpbmRleDpTZWxlY3Rpb25fMzcKMgkxXzM3CTEFgQQ0CUZuABh0ZW5hbnRfAXVQMSkKMwkxM18zNgkxCTQJdGFibGU6DYQIcywgCV4QbmFtZV8JNQAoAQwELCAJDchfaWQpLCBrZWVwIG9yZGVyOmZhbHNlLCBzdGF0czpwc2V1ZG8KMQkxXzMwCTAJODAwMAk+jQAAXx3oATc0dXMsICJjcmVhdGVkIikhMjYrAS4wAJB0eXBlLCAic2NhbGUiKQoyCTMxXzMyCTAJMTAwMDAJZGF0YTpUAdEsUmFuZ2VTY2FuXzMxAe8YMF8zMQkxCQknMvMAHV8ILCByATcgOlswLCtpbmZdgukA')
+# Plan_digest: 2f77926fcf47e4182af478d19ed236650785ae49088a30ecbac3a9bd501a9fb6
+SELECT `cluster_operations`.`id`,`cluster_operations`.`created_at`,`cluster_operations`.`updated_at`,`cluster_operations`.`cluster_id`,`cluster_operations`.`type`,`cluster_operations`.`completed_at`,`cluster_operations`.`status`,`cluster_operations`.`content` FROM `cluster_operations` JOIN clusters ON cluster_operations.cluster_id = clusters.id WHERE clusters.tenant_id = ? AND cluster_operations.status = ? AND type = ? [arguments: (1, created, scale)];
+# Time: 2021-07-19T04:19:38.721478582Z
+# Txn_start_ts: 426421355361075204
+# User: central@10.0.152.239
+# Conn_ID: 737290
+# Query_time: 0.395177987
+# Parse_time: 0.000003853
+# Compile_time: 0.000165488
+# Cop_time: 0.394839155 Request_count: 1
+# DB: dbaas
+# Is_internal: false
+# Digest: 9269382d0a067d2f4798e398ed57bf4b07fb5f9aa758d15662443784cd03af30
+# Stats: clusters:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.wenxuan4.svc:20160
+# Mem_max: 6347
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('zAHwPDAJMV81CTAJMC4wMDMyCWVxKGRiYWFzLmNsdXN0ZXJzLnN0YXR1cywgImRlbGV0ZWQiKQoxCTMxXzgJMAkBNWQ0CWRhdGE6U2VsZWN0aW9uXzcKMgkxXzcJMQVUADRKUwB4dGVuYW50X2lkLCAxKQozCTEwXzYJMQk0CXRhYmxlOhF7wCwgcmFuZ2U6WzAsK2luZl0sIGtlZXAgb3JkZXI6ZmFsc2UsIHN0YXRzOnBzZXVkbwo=')
+# Plan_digest: bd6647c372cbe72d172a88146c94079ece16bcca059b543826c0cac026b877ed
+SELECT * FROM `clusters` WHERE clusters.status = ? AND tenant_id = ? [arguments: (deleted, 1)];
+# Time: 2021-05-21T05:30:17.979961129Z
+# Txn_start_ts: 0
+# Query_time: 79.116003423
+# Parse_time: 0.000142119
+# Compile_time: 0.000040867
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-05-21T05:30:29.982430583Z
+# Txn_start_ts: 0
+# Query_time: 41.569211805
+# Parse_time: 0.000012467
+# Compile_time: 0.000022346
+# Is_internal: true
+# Digest: e6f07d43b5c21db0fbb9a31feac2dc599787763393dd5acbfad80e247eb02ad5
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+begin;
+# Time: 2021-05-21T05:30:31.982829693Z
+# Txn_start_ts: 0
+# Query_time: 22.003890171
+# Parse_time: 0.000080237
+# Compile_time: 0.000352233
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:30:39.984525191Z
+# Txn_start_ts: 0
+# Query_time: 22.004311794
+# Parse_time: 0.00015537
+# Compile_time: 0.000049749
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-05-21T05:30:51.986909736Z
+# Txn_start_ts: 0
+# Query_time: 20.00386539
+# Parse_time: 0.000082045
+# Compile_time: 0.00026702
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:30:53.987358185Z
+# Txn_start_ts: 0
+# Query_time: 24.004713581
+# Parse_time: 0.000077688
+# Compile_time: 0.000208648
+# Is_internal: true
+# Digest: f0b4536b9ca2b2cf8b0b4580fa5a6804ace888b4601ce93f17b17f18409e96f0
+# Stats: stats_meta:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('+QI0MAkzXzE4CTAJMzMzMy4BBREBbDUJbXlzcWwuc3RhdHNfbWV0YS52ZXJzaW9uLCBCGgAcdGFibGVfaWRKGwAsbW9kaWZ5X2NvdW50Sh8ABRgcCjEJMzBfMTdWiAAoCjIJMTNfMTUJMQkBnTqmAAV7ADoZpjwsIGluZGV4OmlkeF92ZXIoDbXwQCksIHJhbmdlOig0MjUwODYxMjI2NjcwMTYxOTcsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAYYMMF8xNp6GAABrGU1MZmFsc2UsIHN0YXRzOnBzZXVkbwo=')
+# Plan_digest: 9faf46fc9d216157e1a154e663d72b8005a139001889bfb1d49d7eca3cfb2341
+SELECT version, table_id, modify_count, count from mysql.stats_meta where version > 425086122667016197 order by version;
+# Time: 2021-05-21T05:31:14.993598102Z
+# Txn_start_ts: 0
+# Query_time: 23.006488446
+# Parse_time: 0.000084706
+# Compile_time: 0.000284399
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:31:18.994406925Z
+# Txn_start_ts: 0
+# Query_time: 20.130476099
+# Parse_time: 0.000133211
+# Compile_time: 0.000039151
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-05-21T05:31:34.997667742Z
+# Txn_start_ts: 0
+# Query_time: 20.003857691
+# Parse_time: 0.000087252
+# Compile_time: 0.000255746
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:31:57.002082061Z
+# Txn_start_ts: 0
+# Query_time: 22.004218872
+# Parse_time: 0.000082492
+# Compile_time: 0.000238197
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:32:19.006538617Z
+# Txn_start_ts: 0
+# Query_time: 22.004220865
+# Parse_time: 0.000077754
+# Compile_time: 0.000231934
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:32:20.006709323Z
+# Txn_start_ts: 0
+# Query_time: 21.142761719
+# Parse_time: 0.000139185
+# Compile_time: 0.000043423
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-05-21T05:32:25.00791454Z
+# Txn_start_ts: 0
+# Query_time: 21.962737659
+# Parse_time: 0.000215341
+# Compile_time: 0.000759259
+# Is_internal: true
+# Digest: 4b773cf9bb358acae5037865d9ab1680f13d2a84958d3c4c91bd1426b3be2b6d
+# Stats: user:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('tgd4MAkzXzMJMAkxMDAwMAlteXNxbC51c2VyLmhvc3QsIB0RARYyEQBQYXV0aGVudGljYXRpb25fc3RyaW5nMiIALHByb2Nlc3NfcHJpdjIZACRsb2NrX3RhYmxlSh0AKGNyZWF0ZV92aWV3RjoADR0Mcm9sZWIdAAh0bXAJXUYiAARmaU44ABh0cmlnZ2VyRi8AEGdyYW50RhcAFYUMdXRpbkpmABRjb25maWdGOAAQc2VsZWNKUAAQaW5zZXJKGAAMZHJvcFrrAAhldmVOmgAcc2h1dGRvd25GfAAQZGVsZXRKrAAYc2hvd19kYkoxAAF9QroBJHJlZmVyZW5jZXNGHAAQaW5kZXhGFwAIdXBkIdBCSwAtRgR1c056AQhhbHROFwAFrlYaAgkyAHJelAEUcmVsb2FkYoYAQp4ACHN1cE6BABBleGVjdU5IARxhY2NvdW50X0HbIGVkCjEJMzFfNXVZFGRhdGE6VEHxSEZ1bGxTY2FuXzQKMgkxMF80CTFtfQB0AR8AOiEPgCwga2VlcCBvcmRlcjpmYWxzZSwgc3RhdHM6cHNldWRvCg==')
+# Plan_digest: 0ab0d4afb87469ce17218bae019dd74d514f3be0a1bed2fb0370aed13d883a81
+select HIGH_PRIORITY Host,User,authentication_string,Process_priv, Lock_tables_priv, Create_view_priv, Create_role_priv, Create_tmp_table_priv, File_priv, Trigger_priv, Grant_priv, Create_routine_priv, Config_priv, Select_priv, Insert_priv, Drop_role_priv, Event_priv, Shutdown_priv, Delete_priv, Show_db_priv, Drop_priv, References_priv, Index_priv, Update_priv, Create_user_priv, Alter_priv, Show_view_priv, Alter_routine_priv, Reload_priv, Create_priv, Super_priv, Execute_priv,account_locked from mysql.user;
+# Time: 2021-05-21T05:32:41.010919632Z
+# Txn_start_ts: 0
+# Query_time: 22.004188088
+# Parse_time: 0.000080868
+# Compile_time: 0.000255931
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: false
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:33:05.87319221Z
+# Txn_start_ts: 425086205513170945
+# Query_time: 24.862041677
+# Parse_time: 0.000077721
+# Compile_time: 0.000258835
+# Cop_time: 0.00057867 Request_count: 1 Total_keys: 1
+# Index_names: [bind_info:time_index]
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 31428
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-21T05:33:06.870678268Z
+# Txn_start_ts: 425086205775314945
+# Query_time: 8.006795425
+# Parse_time: 0.000174208
+# Compile_time: 0.000051362
+# Is_internal: true
+# Digest: 4ef13ef1c364f2ae589706ea4178c0196bcb9add519de2eaabcbcfa7e293dfeb
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('X8gwCTM4XzEJMAk4MAl0YWJsZTpHTE9CQUxfVkFSSUFCTEVTLCBpbmRleDpQUklNQVJZKFYNGZBfTkFNRSksIGtlZXAgb3JkZXI6ZmFsc2UsIGRlc2M6ZmFsc2UK')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('autocommit', 'sql_mode', 'max_allowed_packet', 'time_zone', 'block_encryption_mode', 'wait_timeout', 'interactive_timeout', 'max_prepared_stmt_count', 'init_connect', 'tx_isolation', 'tx_read_only', 'transaction_isolation', 'transaction_read_only', 'net_buffer_length', 'query_cache_type', 'query_cache_size', 'character_set_server', 'auto_increment_increment', 'auto_increment_offset', 'collation_server', 'net_write_timeout', 'max_execution_time', 'innodb_lock_wait_timeout', 'windowing_use_high_precision', 'tidb_skip_utf8_check', 'tidb_index_join_batch_size', 'tidb_index_lookup_size', 'tidb_index_lookup_concurrency', 'tidb_index_lookup_join_concurrency', 'tidb_index_serial_scan_concurrency', 'tidb_hash_join_concurrency', 'tidb_projection_concurrency', 'tidb_hashagg_partial_concurrency', 'tidb_hashagg_final_concurrency', 'tidb_window_concurrency', 'tidb_backoff_lock_fast', 'tidb_backoff_weight', 'tidb_constraint_check_in_place', 'tidb_ddl_reorg_worker_cnt', 'tidb_ddl_reorg_batch_size', 'tidb_ddl_error_count_limit', 'tidb_opt_insubq_to_join_and_agg', 'tidb_opt_correlation_threshold', 'tidb_opt_correlation_exp_factor', 'tidb_opt_cpu_factor', 'tidb_opt_copcpu_factor', 'tidb_opt_network_factor', 'tidb_opt_scan_factor', 'tidb_opt_desc_factor', 'tidb_opt_memory_factor', 'tidb_opt_disk_factor', 'tidb_opt_concurrency_factor', 'tidb_distsql_scan_concurrency', 'tidb_init_chunk_size', 'tidb_max_chunk_size', 'tidb_enable_cascades_planner', 'tidb_retry_limit', 'tidb_disable_txn_auto_retry', 'tidb_enable_window_function', 'tidb_enable_table_partition', 'tidb_enable_vectorized_expression', 'tidb_enable_fast_analyze', 'tidb_expensive_query_time_threshold', 'tidb_enable_noop_functions', 'tidb_enable_index_merge', 'tidb_txn_mode', 'tidb_allow_batch_cop', 'tidb_row_format_version', 'tidb_enable_stmt_summary', 'tidb_stmt_summary_internal_query', 'tidb_stmt_summary_refresh_interval', 'tidb_stmt_summary_history_size', 'tidb_stmt_summary_max_stmt_count', 'tidb_stmt_summary_max_sql_length', 'tidb_max_delta_schema_count', 'tidb_capture_plan_baselines', 'tidb_use_plan_baselines', 'tidb_evolve_plan_baselines', 'tidb_isolation_read_engines', 'tidb_store_limit');
+# Time: 2021-05-22T14:04:23.099999134Z
+# Txn_start_ts: 425116895733612545
+# Query_time: 3.335827502
+# Parse_time: 0.000206405
+# Compile_time: 0.000290598
+# Cop_time: 3.334279035 Request_count: 1 Total_keys: 1
+# Index_names: [bind_info:time_index]
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 31428
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-05-22T14:04:23.100345372Z
+# Txn_start_ts: 425116895799148546
+# User: central@10.0.166.17
+# Conn_ID: 48775
+# Query_time: 3.090655476
+# Parse_time: 0.000005811
+# Compile_time: 0.000192773
+# Cop_time: 3.090276535 Request_count: 1 Total_keys: 4 Process_keys: 2
+# DB: dbaas
+# Is_internal: false
+# Digest: e1a204a74c09f9789201cf72acb17672fa29dcf1d1481b26afe5670235a0d1cc
+# Stats: clusters:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 5713
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('jgLwQDAJMV81CTAJMC4wMDE2CW5vdChlcShkYmFhcy5jbHVzdGVycy5zdGF0dXMsICJjbGVhcmVkIikpLCBub3QoaW4oXisAJGRlbGV0ZWQiLCANCwxjb21wARMsIikpCjEJMzFfOAkwBXdkMglkYXRhOlNlbGVjdGlvbl83CjIJMV83CTENHwBlQpEAeHRlbmFudF9pZCwgMSkKMwkxMF82CTEJMgl0YWJsZToRucAsIHJhbmdlOlswLCtpbmZdLCBrZWVwIG9yZGVyOmZhbHNlLCBzdGF0czpwc2V1ZG8K')
+# Plan_digest: f1c36b9f420253c40f258a571f93f376a0ceaf056082d316ea498e10a56bd5d9
+SELECT * FROM `clusters` WHERE clusters.status NOT IN (?,?) AND clusters.status NOT IN (?) AND tenant_id = ? [arguments: (deleted, deletecomplete, cleared, 1)];
+# Time: 2021-05-22T14:04:23.100662622Z
+# Txn_start_ts: 425116895825362945
+# User: central@10.0.166.17
+# Conn_ID: 48782
+# Query_time: 2.981146773
+# Parse_time: 0.000017372
+# Compile_time: 0.000153857
+# Cop_time: 2.980682644 Request_count: 2
+# DB: dbaas
+# Index_names: [component_machines:idx_component_machines_component_id]
+# Is_internal: false
+# Digest: 33c3a85ccfc3f1f4f2fc585bc67ea20511b0671a8edc8558ac75710fcebdd2a6
+# Stats: component_machines:pseudo
+# Num_cop_tasks: 2
+# Cop_proc_avg: 0 Cop_proc_p90: 0 Cop_proc_max: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_p90: 0 Cop_wait_max: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 12984
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('tQLwSTAJMV81CTAJMC4wMjQJbm90KGVxKGRiYWFzLmNvbXBvbmVudF9tYWNoaW5lcy5zdGF0dXMsICJkZWxldGVkIikpCjEJMzBfMTEJBUQoMwkKMgkxM185CTEBUxwzCXRhYmxlOkZLACwsIGluZGV4OmlkeF9GHgAdEwhpZCgZIFRpZCksIHJhbmdlOls0LDRdLCBbNSw1AQfINiw2XSwga2VlcCBvcmRlcjpmYWxzZSwgc3RhdHM6cHNldWRvCjIJMTBfMTAJMQkwLjAzapwAekgA')
+# Plan_digest: 5c0a50b0903c60211c28e890587c923f72b7735e89c9da241e01f151b7352a9e
+SELECT * FROM `component_machines` WHERE `component_machines`.`component_id` IN (?,?,?) AND status NOT IN (?) [arguments: (4, 5, 6, deleted)];
+# Time: 2021-06-01T12:40:38.891490772Z
+# Txn_start_ts: 425342071675551745
+# Query_time: 1.07463004
+# Parse_time: 0.00007097
+# Compile_time: 0.000040797
+# Is_internal: true
+# Digest: 7d757d38b465483f07a597132f3a973125e78d6db2f42a0d1d8c7c0ec575f500
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('XsAwCTM4XzEJMAkzCXRhYmxlOkdMT0JBTF9WQVJJQUJMRVMsIGluZGV4OlBSSU1BUlkoERmQX05BTUUpLCBrZWVwIG9yZGVyOmZhbHNlLCBkZXNjOmZhbHNlCg==')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select variable_name, variable_value from mysql.global_variables where variable_name in ('tidb_auto_analyze_ratio', 'tidb_auto_analyze_start_time', 'tidb_auto_analyze_end_time');
+# Time: 2021-06-05T11:40:44.411802382Z
+# Txn_start_ts: 425431726496415745
+# User: central@10.0.107.156
+# Conn_ID: 204984
+# Query_time: 0.622266858
+# Parse_time: 0.000004952
+# Compile_time: 0.000018064
+# DB: dbaas
+# Is_internal: false
+# Digest: ed92730a299893986a61a758079f9c75c020a676ee941519b52d40f11f3e44c0
+# Num_cop_tasks: 0
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('TPBLMAkzOF8xCTAJNQl0YWJsZTptYWNoaW5lcywgaGFuZGxlOlsxIDIgMyA0IDVdLCBrZWVwIG9yZGVyOmZhbHNlLCBkZXNjOmZhbHNlCg==')
+# Plan_digest: aa03c25f48a9ebc759e7d1a50779eeff4b9b3e85da2a2bf3c6f5ed1838037228
+SELECT * FROM `machines` WHERE `machines`.`id` IN (?,?,?,?,?) [arguments: (1, 2, 3, 4, 5)];
+# Time: 2021-06-05T11:40:44.412324916Z
+# Txn_start_ts: 425431726483308548
+# User: central@10.0.107.156
+# Conn_ID: 204998
+# Query_time: 0.62563835
+# Parse_time: 0.00000513
+# Compile_time: 0.000147309
+# Cop_time: 0.625236348 Request_count: 2
+# DB: dbaas
+# Index_names: [zones:idx_zones_region_id]
+# Is_internal: false
+# Digest: 19579f4fb459256209d7e7b06306d8318530428c9cd7ad52f18aba42f9a27eae
+# Stats: zones:pseudo
+# Num_cop_tasks: 2
+# Cop_proc_avg: 0 Cop_proc_p90: 0 Cop_proc_max: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_p90: 0 Cop_wait_max: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 10720
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('5wFEMAkzMF8xMAkwCTAuMDExMjUwHQEoMwkKMQkxM184CTFWHwBYdGFibGU6em9uZXMsIGluZGV4OmlkeF8FEShfcmVnaW9uX2lkKBUK0CksIHJhbmdlOlsyLDJdLCBrZWVwIG9yZGVyOmZhbHNlLCBzdGF0czpwc2V1ZG8KMQkxMF85kn0AekoA')
+# Plan_digest: 818bdbcf2e60a0acecc3f25479fec11679e3083d0edb403424e3142d20ec252e
+SELECT * FROM `zones` WHERE `zones`.`region_id` = ? [arguments: 2];
+# Time: 2021-06-05T11:40:44.417302223Z
+# Txn_start_ts: 425431726522630145
+# User: billing@10.0.153.133
+# Conn_ID: 204995
+# Query_time: 0.521924118
+# Parse_time: 0.000006233
+# Compile_time: 0.000010978
+# Prewrite_time: 0.517813829 Commit_time: 0.002031694 Get_commit_ts_time: 0.002031591 Write_keys: 1 Write_size: 19 Prewrite_region: 1
+# DB: billing
+# Is_internal: false
+# Digest: 9505cacb7c710ed17125fcc6cb3669e8ddca6c8cd8af6a31f6b3cd64604c3098
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Prev_stmt: UPDATE `cluster_heartbeats` SET `ended_at`=?,`started_at`=? WHERE `id` = ? [arguments: (1622893243, 1622794483, 30041)]
+COMMIT;
+# Time: 2021-06-09T00:43:50.304889616Z
+# Txn_start_ts: 425511991332306945
+# User: central@10.0.98.112
+# Conn_ID: 244380
+# Query_time: 0.434749463
+# Parse_time: 0.000014281
+# Compile_time: 0.000280186
+# Cop_time: 0.434266577 Request_count: 1 Total_keys: 1
+# DB: dbaas
+# Index_names: [imports:idx_imports_clean_up]
+# Is_internal: false
+# Digest: f512eca7ee812a217885d76dc9b96bb0da6b41f16e227a70c5c5ebb055eeb05e
+# Stats: imports:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 180
+# Prepared: true
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('tQHIMAkzMF8xMAkwCTEwCQoxCTEzXzgJMQkxMAl0YWJsZTppbXBvcnRzLCBpbmRleDppZHhfDRMkX2NsZWFuX3VwKBEJuCksIHJhbmdlOlswLDBdLCBrZWVwIG9yZGVyOmZhbHNlLCBzdGF0czpwc2V1ZG8KAWYEXzlSbQB6OgA=')
+# Plan_digest: 0801cd08b1421c81aabeca1b91ce9ff15671967be13b0920978344588d3eb472
+SELECT * FROM `imports` WHERE clean_up = ? [arguments: 0];
+# Time: 2021-06-09T00:43:50.307807089Z
+# Txn_start_ts: 425511991319199745
+# Query_time: 0.490950273
+# Parse_time: 0.000179211
+# Compile_time: 0.000039912
+# Is_internal: true
+# Digest: 7d757d38b465483f07a597132f3a973125e78d6db2f42a0d1d8c7c0ec575f500
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('XsAwCTM4XzEJMAkzCXRhYmxlOkdMT0JBTF9WQVJJQUJMRVMsIGluZGV4OlBSSU1BUlkoERmQX05BTUUpLCBrZWVwIG9yZGVyOmZhbHNlLCBkZXNjOmZhbHNlCg==')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select variable_name, variable_value from mysql.global_variables where variable_name in ('tidb_auto_analyze_ratio', 'tidb_auto_analyze_start_time', 'tidb_auto_analyze_end_time');
+# Time: 2021-06-09T00:43:50.307921083Z
+# Txn_start_ts: 425511991306092545
+# Query_time: 0.543849066
+# Parse_time: 0.000185145
+# Compile_time: 0.000243636
+# Cop_time: 0.542245177 Request_count: 1 Total_keys: 1
+# Index_names: [bind_info:time_index]
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 31428
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-06-10T05:57:41.129625108Z
+# Txn_start_ts: 425539577086738436
+# Query_time: 0.365520856
+# Parse_time: 0.000097025
+# Compile_time: 0.000287233
+# Cop_time: 0.00059842 Request_count: 1 Total_keys: 1
+# Index_names: [bind_info:time_index]
+# Is_internal: true
+# Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
+# Stats: bind_info:pseudo
+# Num_cop_tasks: 1
+# Cop_proc_avg: 0 Cop_proc_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Cop_wait_avg: 0 Cop_wait_addr: db-tikv-0.db-tikv-peer.jyzdev.svc:20160
+# Mem_max: 31428
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('9AM0MAkzXzE4CTAJMzMzMy4BBREBfDUJbXlzcWwuYmluZF9pbmZvLm9yaWdpbmFsX3NxbCwgPh4ABShSGgAkZGVmYXVsdF9kYkY2ABRzdGF0dXNGGAAoY3JlYXRlX3RpbWVGHQAIdXBkZh0AGGNoYXJzZXRGNgBAY29sbGF0aW9uCjEJMzBfMTdW9gAoCjIJMTNfMTUJMQkhCzoUARR0YWJsZToF7CEUHCwgaW5kZXg6AagAXwULCCh1cBWdOCksIHJhbmdlOigwMDAwLQUDDCAwMDoFAwAuARSYMDAsK2luZl0sIGtlZXAgb3JkZXI6dHJ1ZSwgc3RhdHM6cHNldWRvAZQMMF8xNpqUAB1MDGZhbHM+TQA=')
+# Plan_digest: 76900b4634678820c876c2855d6bd7e7a7b0f9b46a8d0dbd964ca01f05d44fde
+select original_sql, bind_sql, default_db, status, create_time, update_time, charset, collation from mysql.bind_info where update_time > "0000-00-00 00:00:00" order by update_time;
+# Time: 2021-06-10T05:57:41.129757326Z
+# Txn_start_ts: 425539577086738437
+# Query_time: 0.312893349
+# Parse_time: 0.000081898
+# Compile_time: 0.00003325
+# Is_internal: true
+# Digest: 7d757d38b465483f07a597132f3a973125e78d6db2f42a0d1d8c7c0ec575f500
+# Num_cop_tasks: 0
+# Prepared: false
+# Plan_from_cache: false
+# Has_more_results: false
+# Succ: true
+# Plan: tidb_decode_plan('XsAwCTM4XzEJMAkzCXRhYmxlOkdMT0JBTF9WQVJJQUJMRVMsIGluZGV4OlBSSU1BUlkoERmQX05BTUUpLCBrZWVwIG9yZGVyOmZhbHNlLCBkZXNjOmZhbHNlCg==')
+# Plan_digest: 9030fefb1d63c5747f83dfe86dd2720052a602bf9d8ff31b21ad4add7a8defc8
+select variable_name, variable_value from mysql.global_variables where variable_name in ('tidb_auto_analyze_ratio', 'tidb_auto_analyze_start_time', 'tidb_auto_analyze_end_time');

@@ -10,7 +10,7 @@ import (
 var (
 	// reference: executor/slowQueryTuple
 	// column_name: column_type
-	slowQuerySQLType = map[string]string{
+	schemaColumnTypes = map[string]string{
 		"Instance":                      "varchar(64)",
 		"Time":                          "timestamp(6)",
 		"Txn_start_ts":                  "double",
@@ -81,12 +81,12 @@ var (
 		"Rocksdb_block_read_count":      "double",
 		"Rocksdb_block_read_byte":       "double",
 	}
-	orderedColumn = make([]string, 0, len(slowQuerySQLType))
+	orderedColumn = make([]string, 0, len(schemaColumnTypes))
 	zone, _       = time.LoadLocation("UTC")
 )
 
 func init() {
-	for k := range slowQuerySQLType {
+	for k := range schemaColumnTypes {
 		orderedColumn = append(orderedColumn, k)
 	}
 }
@@ -115,10 +115,11 @@ func createTableStmt(schema, table string, lessThanPartitions []time.Time) strin
 	buf := new(bytes.Buffer)
 	buf.WriteString(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
 	buf.WriteString("`id` bigint(20) unsigned not null AUTO_INCREMENT,")
-	for k, v := range slowQuerySQLType {
+	for k, v := range schemaColumnTypes {
 		buf.WriteString(fmt.Sprintf("%s %s,", quoteSchemaObjectIdentifier(k), v))
 	}
-	buf.WriteString("PRIMARY KEY (`id`,`Time`)")
+	buf.WriteString("PRIMARY KEY (`id`,`Time`),")
+	buf.WriteString("INDEX `query_index` (`Digest`, `Conn_ID`)")
 	buf.WriteString(") ")
 	buf.WriteString("PARTITION BY RANGE (FLOOR(UNIX_TIMESTAMP(`Time`))) (")
 	for _, p := range lessThanPartitions {
