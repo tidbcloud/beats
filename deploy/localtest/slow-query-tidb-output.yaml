@@ -1,20 +1,29 @@
 filebeat.inputs:
-  - type: stdin
-    multiline.type: pattern
-    multiline.pattern: '^# Time: '
-    multiline.negate: true
-    multiline.match: after
-    multiline.timeout: 1s
+  - type: filestream
+    paths:
+      - ./deploy/localtest/test_input.log
+    parsers:
+      - multiline.type: pattern
+        multiline.pattern: '^# Time: '
+        multiline.negate: true
+        multiline.match: after
+        multiline.timeout: 1s
 
 processors:
+  - add_fields:
+      target: kubernetes
+      fields:
+        pod:
+          name: db-tidb-01
+        namespace: tidb999999999
   - tidb_slow_query:
 
 output.tidb_slow_query:
-  host: localhost
+  host: tidb.e23bdccc.cb17aaf2.us-west-2.prod.aws.tidbcloud.com
   port: 4000
-  user: root
-  password:
-  database: test
+  user: slowquery
+  password: e0guRuL91x%@Qm7cn2TxsOoI
+  database: slow_query_dev
   timeout: 60000s
   max_retries: 3
   backoff:
@@ -24,5 +33,6 @@ output.tidb_slow_query:
     retention: 365
     roll_step: 3
 
+path.home: ./__local_home
 logging.level: debug
 logging.metrics.enabled: false

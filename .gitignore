@@ -13,6 +13,7 @@
 x-pack/functionbeat/pkg
 x-pack/elastic-agent/data
 x-pack/elastic-agent/pkg/agent/operation/tests/downloads
+/__local_home
 
 # Files
 .DS_Store
