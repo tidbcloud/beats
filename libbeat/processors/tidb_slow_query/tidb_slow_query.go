@@ -74,7 +74,7 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 
 	m0, err := event.Fields.GetValue("message")
 	if err != nil {
-		return nil, err
+		return nil, errors.Errorf("cannot get message field")
 	}
 	m1 := m0.(string)
 	p.log.Debugf("raw message:\n", m1)
@@ -82,7 +82,7 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 	lines := strings.Split(m1, "\n")
 
 	if len(lines) < 3 {
-		return nil, errors.Errorf("slow query log must contain Time and Statement lines: %v", lines)
+		return nil, errors.Errorf("slow query log must contain Time and Statement lines: %s", m1)
 	}
 
 	_, err = p.parseKVAndUpdateFields(event, lines)
@@ -93,15 +93,15 @@ func (p *processor) Run(event *beat.Event) (*beat.Event, error) {
 	event.PutValue("Query", lines[len(lines)-1])
 
 	if err := p.extractTimestamp(event); err != nil {
-		return nil, err
+		return nil, errors.Errorf("cannot extract timestamp from Time field: %s", m1)
 	}
 
 	if err := p.trimPlan(event); err != nil {
-		return nil, err
+		p.log.Warnf("cannot trim plan: %s", m1)
 	}
 
 	if err := p.extractInstance(event); err != nil {
-		return nil, err
+		p.log.Warnf("cannot extract instance from kubernetes.pod.name: %s", m1)
 	}
 
 	event.Delete("message")

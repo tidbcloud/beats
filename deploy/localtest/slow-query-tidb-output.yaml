@@ -1,21 +1,85 @@
 filebeat.inputs:
   - type: filestream
     paths:
-      - ./deploy/localtest/test_input.log
+      - ./deploy/localtest/test_input_01.log
     parsers:
       - multiline.type: pattern
         multiline.pattern: '^# Time: '
         multiline.negate: true
         multiline.match: after
         multiline.timeout: 1s
-
+    processors:
+      - add_fields:
+          target: kubernetes
+          fields:
+            pod:
+              name: db-tidb-1
+            namespace: tidb1369682775200135353
+  - type: filestream
+    paths:
+      - ./deploy/localtest/test_input_02.log
+    parsers:
+      - multiline.type: pattern
+        multiline.pattern: '^# Time: '
+        multiline.negate: true
+        multiline.match: after
+        multiline.timeout: 1s
+    processors:
+      - add_fields:
+          target: kubernetes
+          fields:
+            pod:
+              name: db-tidb-2
+            namespace: tidb1369682775200135351
+  - type: filestream
+    paths:
+      - ./deploy/localtest/test_input_02.log
+    parsers:
+      - multiline.type: pattern
+        multiline.pattern: '^# Time: '
+        multiline.negate: true
+        multiline.match: after
+        multiline.timeout: 1s
+    processors:
+      - add_fields:
+          target: kubernetes
+          fields:
+            pod:
+              name: db-tidb-2
+            namespace: tidb1369682775200135350
+  - type: filestream
+    paths:
+      - ./deploy/localtest/test_input_02.log
+    parsers:
+      - multiline.type: pattern
+        multiline.pattern: '^# Time: '
+        multiline.negate: true
+        multiline.match: after
+        multiline.timeout: 1s
+    processors:
+      - add_fields:
+          target: kubernetes
+          fields:
+            pod:
+              name: db-tidb-2
+            namespace: tidb1369682775200135337
+  - type: filestream
+    paths:
+      - ./deploy/localtest/test_input_02.log
+    parsers:
+      - multiline.type: pattern
+        multiline.pattern: '^# Time: '
+        multiline.negate: true
+        multiline.match: after
+        multiline.timeout: 1s
+    processors:
+      - add_fields:
+          target: kubernetes
+          fields:
+            pod:
+              name: db-tidb-2
+            namespace: tidb1369682775200135336
 processors:
-  - add_fields:
-      target: kubernetes
-      fields:
-        pod:
-          name: db-tidb-01
-        namespace: tidb999999999
   - tidb_slow_query:
 
 output.tidb_slow_query:
@@ -34,5 +98,5 @@ output.tidb_slow_query:
     roll_step: 3
 
 path.home: ./__local_home
-logging.level: debug
+logging.level: info
 logging.metrics.enabled: false
