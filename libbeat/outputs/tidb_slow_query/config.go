@@ -18,17 +18,30 @@
 package tidb_slow_query
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"fmt"
+	"github.com/go-sql-driver/mysql"
+	"io/ioutil"
 	"time"
+)
+
+const (
+	dsnParam = "charset=utf8mb4&parseTime=True&loc=UTC&timeout=30s&readTimeout=30s&writeTimeout=30s"
+	tlsKey   = "__slow_query_output"
 )
 
 type Config struct {
 	// connections
-	Host     string        `config:"host"`
-	Port     int           `config:"port"`
-	User     string        `config:"user"`
-	Password string        `config:"password"`
-	Database string        `config:"database"`
-	Timeout  time.Duration `config:"timeout"`
+	Host           string        `config:"host"`
+	Port           int           `config:"port"`
+	User           string        `config:"user"`
+	Password       string        `config:"password"`
+	Database       string        `config:"database"`
+	Timeout        time.Duration `config:"timeout"`
+	CAPath         string        `config:"ca_path"`
+	ClientCertPath string        `config:"client_cert_path"`
+	ClientKeyPath  string        `config:"client_key_path"`
 
 	// retry
 	MaxRetries int     `config:"max_retries"`
@@ -36,6 +49,66 @@ type Config struct {
 
 	// sql range partition
 	Partition Partition `config:"partition"`
+}
+
+func (c Config) DSN() string {
+	return c.dsn(false, true)
+}
+
+func (c Config) dsn(maskPassword, withDB bool) string {
+	port := c.Port
+	if c.Port > 0 {
+		port = c.Port
+	}
+	var dsn string
+	if maskPassword {
+		dsn = fmt.Sprintf("%s@(%s:%d)", c.User, c.Host, port)
+	} else {
+		dsn = fmt.Sprintf("%s:%s@(%s:%d)", c.User, c.Password, c.Host, port)
+	}
+	if withDB {
+		dsn = fmt.Sprintf("%s/%s?%s", dsn, c.Database, dsnParam)
+	} else {
+		dsn = fmt.Sprintf("%s/?%s", dsn, dsnParam)
+	}
+	if c.checkMutualTLSEnable() {
+		dsn = fmt.Sprintf("%s&tls=%s", dsn, tlsKey)
+	}
+	return dsn
+}
+
+func (c Config) checkMutualTLSEnable() bool {
+	if len(c.CAPath) > 0 && len(c.ClientCertPath) > 0 && len(c.ClientKeyPath) > 0 {
+		return true
+	}
+	return false
+}
+
+func (c Config) RegisterTLS() error {
+	if !c.checkMutualTLSEnable() {
+		return fmt.Errorf("failed to enable tls: some of tls configs (ca, client key, or client cert) are missing")
+	}
+	// init ca
+	rootCertPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile(c.CAPath)
+	if err != nil {
+		return err
+	}
+	if ok := rootCertPool.AppendCertsFromPEM([]byte(ca)); !ok {
+		return fmt.Errorf("parsing and appending certificates failed")
+	}
+	// init client cert and client key
+	clientCert := make([]tls.Certificate, 0, 1)
+	certs, err := tls.LoadX509KeyPair(c.ClientCertPath, c.ClientKeyPath)
+	if err != nil {
+		return err
+	}
+	clientCert = append(clientCert, certs)
+	// register ca and cert to mysql driver
+	return mysql.RegisterTLSConfig(tlsKey, &tls.Config{
+		RootCAs:      rootCertPool,
+		Certificates: clientCert,
+	})
 }
 
 type Backoff struct {
@@ -50,7 +123,7 @@ type Partition struct {
 
 var defaultConfig = Config{
 	Port:       4000,
-	Timeout:    10 * time.Second,
+	Timeout:    30 * time.Second,
 	MaxRetries: 3,
 	Backoff: Backoff{
 		Init: 1 * time.Second,
