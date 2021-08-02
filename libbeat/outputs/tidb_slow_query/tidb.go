@@ -18,7 +18,6 @@
 package tidb_slow_query
 
 import (
-	"fmt"
 	"github.com/elastic/beats/v7/libbeat/beat"
 	"github.com/elastic/beats/v7/libbeat/common"
 	"github.com/elastic/beats/v7/libbeat/outputs"
@@ -41,8 +40,12 @@ func makeTiDB(
 	if err != nil {
 		return outputs.Fail(err)
 	}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.User, config.Password, config.Host, config.Port, config.Database)
-	c, err := newClient(observer, config.Timeout, config.Database, dsn, config.Partition.Retention, config.Partition.RollStep)
+	if config.checkMutualTLSEnable() {
+		if err := config.RegisterTLS(); err != nil {
+			return outputs.Fail(err)
+		}
+	}
+	c, err := newClient(observer, config.Timeout, config.Database, config.DSN(), config.Partition.Retention, config.Partition.RollStep)
 	if err != nil {
 		return outputs.Fail(err)
 	}

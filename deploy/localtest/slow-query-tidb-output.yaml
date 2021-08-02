@@ -83,12 +83,15 @@ processors:
   - tidb_slow_query:
 
 output.tidb_slow_query:
-  host: tidb.e23bdccc.cb17aaf2.us-west-2.prod.aws.tidbcloud.com
+  host: tidb.12c97f40.cb17aaf2.us-west-2.prod.aws.tidbcloud.com
   port: 4000
-  user: slowquery
-  password: e0guRuL91x%@Qm7cn2TxsOoI
+  user: root
+  password: [PWD]
   database: slow_query_dev
-  timeout: 60000s
+  timeout: 30s
+  ca_path: ./deploy/localtest/ca.crt
+  client_cert_path: ./deploy/localtest/tls.crt
+  clientKey: ./deploy/localtest/tls.key
   max_retries: 3
   backoff:
     init: 1s
