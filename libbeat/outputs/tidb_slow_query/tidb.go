@@ -40,8 +40,8 @@ func makeTiDB(
 	if err != nil {
 		return outputs.Fail(err)
 	}
-	if config.checkMutualTLSEnable() {
-		if err := config.RegisterTLS(); err != nil {
+	if config.isMutualTLSEnabled() {
+		if err := config.registerTLSToDriver(); err != nil {
 			return outputs.Fail(err)
 		}
 	}

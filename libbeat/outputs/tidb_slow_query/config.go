@@ -27,8 +27,7 @@ import (
 )
 
 const (
-	dsnParam = "charset=utf8mb4&parseTime=True&loc=UTC&timeout=30s&readTimeout=30s&writeTimeout=30s"
-	tlsKey   = "__slow_query_output"
+	tlsKey = "slow_query_mysql_output"
 )
 
 type Config struct {
@@ -52,40 +51,34 @@ type Config struct {
 }
 
 func (c Config) DSN() string {
-	return c.dsn(false, true)
+	mysqlConfig := mysql.Config{
+		User:         c.User,
+		Addr:         fmt.Sprintf("%s:%d", c.Host, c.Port),
+		Passwd:       c.Password,
+		DBName:       c.Database,
+		ParseTime:    true,
+		Loc:          time.UTC,
+		Timeout:      30 * time.Second,
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 30 * time.Second,
+		Params: map[string]string{
+			"charset": "utf8mb4",
+		},
+		TLSConfig: tlsKey,
+	}
+
+	return mysqlConfig.FormatDSN()
 }
 
-func (c Config) dsn(maskPassword, withDB bool) string {
-	port := c.Port
-	if c.Port > 0 {
-		port = c.Port
-	}
-	var dsn string
-	if maskPassword {
-		dsn = fmt.Sprintf("%s@(%s:%d)", c.User, c.Host, port)
-	} else {
-		dsn = fmt.Sprintf("%s:%s@(%s:%d)", c.User, c.Password, c.Host, port)
-	}
-	if withDB {
-		dsn = fmt.Sprintf("%s/%s?%s", dsn, c.Database, dsnParam)
-	} else {
-		dsn = fmt.Sprintf("%s/?%s", dsn, dsnParam)
-	}
-	if c.checkMutualTLSEnable() {
-		dsn = fmt.Sprintf("%s&tls=%s", dsn, tlsKey)
-	}
-	return dsn
-}
-
-func (c Config) checkMutualTLSEnable() bool {
+func (c Config) isMutualTLSEnabled() bool {
 	if len(c.CAPath) > 0 && len(c.ClientCertPath) > 0 && len(c.ClientKeyPath) > 0 {
 		return true
 	}
 	return false
 }
 
-func (c Config) RegisterTLS() error {
-	if !c.checkMutualTLSEnable() {
+func (c Config) registerTLSToDriver() error {
+	if !c.isMutualTLSEnabled() {
 		return fmt.Errorf("failed to enable tls: some of tls configs (ca, client key, or client cert) are missing")
 	}
 	// init ca
