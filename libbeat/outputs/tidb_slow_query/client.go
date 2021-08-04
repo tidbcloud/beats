@@ -9,6 +9,7 @@ import (
 	"github.com/elastic/beats/v7/libbeat/publisher"
 	"github.com/go-sql-driver/mysql"
 	lru "github.com/hashicorp/golang-lru"
+	"strings"
 	"time"
 )
 
@@ -88,16 +89,17 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// todo: support multi events from different cluster (with different table name)
 	event := batch.Events()[0]
 
-	table, err := c.getClusterIDAsTableName(event)
+	clusterID, err := c.extractClusterID(event)
 	if err != nil {
 		c.observer.Dropped(1)
 		batch.Cancelled()
 		return err
 	}
+	table := c.buildTableName(clusterID)
 
 	// get driver statement
 	if !c.stmtCache.Contains(table) {
-		sqlString := insertStmt(c.database, table)
+		sqlString := buildInsertStmt(c.database, table)
 		s, err := c.conn.PrepareContext(ctx, sqlString)
 		if err != nil {
 			newErr := c.handleInsertError(err, ctx, table, event)
@@ -166,22 +168,30 @@ func getFields(event publisher.Event) []interface{} {
 	return r
 }
 
-func (c *client) getClusterIDAsTableName(event publisher.Event) (string, error) {
+func (c *client) extractClusterID(event publisher.Event) (string, error) {
 	v, err := event.Content.GetValue(clusterIDFieldKey)
 	if err != nil {
-		c.log.Warnf("get cluster id as table name failed: %s", err)
+		c.log.Warnf("get cluster id as table name failed: %s, ", err)
 		v = noClusterID
 	}
-	tableName, ok := v.(string)
+	clusterID, ok := v.(string)
 	if !ok {
 		return "", fmt.Errorf("the value of cluster id must be string")
 	}
-	return tableName, nil
+	return clusterID, nil
+}
+
+func (c *client) buildTableName(clusterID string) string {
+	// ensure format of table name is consistent with k8s namespace, "tidb[clusterID]"
+	if strings.HasPrefix(clusterID, "tidb") {
+		return clusterID
+	}
+	return fmt.Sprintf("tidb%s", clusterID)
 }
 
 func (c *client) createTable(ctx context.Context, table string, curTime time.Time) error {
 	parts := calculateLessThanPartitionBoundary(curTime, c.rollStep)
-	sqlString := createTableStmt(c.database, table, parts)
+	sqlString := buildCreateTableStmt(c.database, table, parts)
 	_, err := c.conn.ExecContext(ctx, sqlString)
 	c.log.Info("create table ", sqlString, "error", err)
 	return err
@@ -194,7 +204,7 @@ func (c *client) createPartitions(ctx context.Context, table string, curTime tim
 	}
 	if len(parts)+c.rollStep > c.retention {
 		// drop partitions from head
-		dropSqlString := dropPartitionStmt(c.database, table, parts[:c.rollStep])
+		dropSqlString := buildDropPartitionStmt(c.database, table, parts[:c.rollStep])
 		_, err := c.conn.ExecContext(ctx, dropSqlString)
 		if err != nil {
 			return err
@@ -202,14 +212,14 @@ func (c *client) createPartitions(ctx context.Context, table string, curTime tim
 	}
 	// create new partition at tail
 	newParts := calculateLessThanPartitionBoundary(curTime, c.rollStep)
-	createSqlString := creationPartitionStmt(c.database, table, newParts)
+	createSqlString := buildCreationPartitionStmt(c.database, table, newParts)
 	_, err = c.conn.ExecContext(ctx, createSqlString)
 	c.log.Info("create partitions ", createSqlString, "error", err)
 	return err
 }
 
 func (c *client) getPartitions(ctx context.Context, table string) ([]string, error) {
-	getPartSql := getPartitionStmt(c.database, table)
+	getPartSql := buildGetPartitionStmt(c.database, table)
 	rows, err := c.conn.QueryContext(ctx, getPartSql)
 	if err != nil {
 		return nil, err

@@ -1,7 +1,6 @@
 package tidb_slow_query
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 	"time"
@@ -91,47 +90,48 @@ func init() {
 	}
 }
 
-const dateFormat = "2006-01-02"
-
-func insertStmt(schema, table string) string {
+func buildInsertStmt(schema, table string) string {
 	cols := make([]string, 0, len(orderedColumn))
 	args := make([]string, 0, len(orderedColumn))
 	for _, c := range orderedColumn {
 		cols = append(cols, quoteSchemaObjectIdentifier(c))
 		args = append(args, "?")
 	}
-	buf := new(bytes.Buffer)
-	buf.WriteString(fmt.Sprintf("INSERT INTO %s.%s (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
-	buf.WriteString(strings.Join(cols, ","))
-	buf.WriteString(") ")
-	buf.WriteString("VALUES (")
-	buf.WriteString(strings.Join(args, ","))
-	buf.WriteString(") ")
-	buf.WriteString(";")
-	return buf.String()
+	b := strings.Builder{}
+	b.WriteString(fmt.Sprintf("INSERT INTO %s.%s (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
+	b.WriteString(strings.Join(cols, ","))
+	b.WriteString(") ")
+	b.WriteString("VALUES (")
+	b.WriteString(strings.Join(args, ","))
+	b.WriteString(") ")
+	b.WriteString(";")
+	return b.String()
 }
 
-func createTableStmt(schema, table string, lessThanPartitions []time.Time) string {
-	buf := new(bytes.Buffer)
-	buf.WriteString(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
-	buf.WriteString("`id` bigint(20) unsigned not null AUTO_INCREMENT,")
+func buildCreateTableStmt(schema, table string, lessThanPartitions []time.Time) string {
+	b := strings.Builder{}
+	b.WriteString(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s.%s (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
+	b.WriteString("`id` bigint(20) unsigned not null AUTO_INCREMENT,")
 	for k, v := range schemaColumnTypes {
-		buf.WriteString(fmt.Sprintf("%s %s,", quoteSchemaObjectIdentifier(k), v))
+		b.WriteString(fmt.Sprintf("%s %s,", quoteSchemaObjectIdentifier(k), v))
 	}
-	buf.WriteString("PRIMARY KEY (`id`,`Time`),")
-	buf.WriteString("INDEX `query_index` (`Digest`, `Conn_ID`)")
-	buf.WriteString(") ")
-	buf.WriteString("PARTITION BY RANGE (FLOOR(UNIX_TIMESTAMP(`Time`))) (")
-	for _, p := range lessThanPartitions {
+	b.WriteString("PRIMARY KEY (`id`,`Time`),")
+	b.WriteString("INDEX `query_index` (`Digest`, `Conn_ID`)")
+	b.WriteString(") ")
+	b.WriteString("PARTITION BY RANGE (FLOOR(UNIX_TIMESTAMP(`Time`))) (")
+	for i := 0; i < len(lessThanPartitions)-1; i++ {
+		p := lessThanPartitions[i]
 		unix := p.Unix()
-		buf.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d),", partName(p), unix))
+		b.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d),", buildPartitionName(p), unix))
 	}
-	// delete the last ,
+	// add the last partition
 	if len(lessThanPartitions) > 0 {
-		buf.Truncate(buf.Len() - 1)
+		lastP := lessThanPartitions[len(lessThanPartitions)-1]
+		unix := lastP.Unix()
+		b.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d)", buildPartitionName(lastP), unix))
 	}
-	buf.WriteString(");")
-	return buf.String()
+	b.WriteString(");")
+	return b.String()
 }
 
 func calculateLessThanPartitionBoundary(t time.Time, step int) []time.Time {
@@ -145,45 +145,49 @@ func calculateLessThanPartitionBoundary(t time.Time, step int) []time.Time {
 	return parts
 }
 
-func getPartitionStmt(schema, table string) string {
+func buildGetPartitionStmt(schema, table string) string {
 	return fmt.Sprintf("SELECT `partition_name` FROM `information_schema`.`partitions` "+
 		"WHERE table_schema='%s' AND table_name='%s' AND `partition_name` IS NOT NULL order by `partition_name` asc",
 		schema, table)
 }
 
-func creationPartitionStmt(schema, table string, lessThanPartitions []time.Time) string {
-	buf := new(bytes.Buffer)
+func buildCreationPartitionStmt(schema, table string, lessThanPartitions []time.Time) string {
+	b := strings.Builder{}
 
-	buf.WriteString(fmt.Sprintf("ALTER TABLE %s.%s ADD PARTITION (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
-	for _, p := range lessThanPartitions {
+	b.WriteString(fmt.Sprintf("ALTER TABLE %s.%s ADD PARTITION (", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
+	for i := 0; i < len(lessThanPartitions)-1; i++ {
+		p := lessThanPartitions[i]
 		unix := p.Unix()
-		buf.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d),", partName(p), unix))
+		b.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d),", buildPartitionName(p), unix))
 	}
-	// delete the last ,
+	// add the last partition
 	if len(lessThanPartitions) > 0 {
-		buf.Truncate(buf.Len() - 1)
+		lastP := lessThanPartitions[len(lessThanPartitions)-1]
+		b.WriteString(fmt.Sprintf("PARTITION %s VALUES LESS THAN (%d)", buildPartitionName(lastP), lastP.Unix()))
 	}
-	buf.WriteString(");")
-	return buf.String()
+	b.WriteString(");")
+	return b.String()
 }
 
-func dropPartitionStmt(schema, table string, lessThanPartitions []string) string {
-	buf := new(bytes.Buffer)
+func buildDropPartitionStmt(schema, table string, lessThanPartitions []string) string {
+	b := strings.Builder{}
 
-	buf.WriteString(fmt.Sprintf("ALTER TABLE %s.%s drop PARTITION ", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
-	for _, p := range lessThanPartitions {
-		buf.WriteString(quoteSchemaObjectIdentifier(p) + ",")
+	b.WriteString(fmt.Sprintf("ALTER TABLE %s.%s drop PARTITION ", quoteSchemaObjectIdentifier(schema), quoteSchemaObjectIdentifier(table)))
+	for i := 0; i < len(lessThanPartitions)-1; i++ {
+		p := lessThanPartitions[i]
+		b.WriteString(quoteSchemaObjectIdentifier(p) + ",")
 	}
-	// delete the last ,
+	// add the last partition
 	if len(lessThanPartitions) > 0 {
-		buf.Truncate(buf.Len() - 1)
+		lastP := lessThanPartitions[len(lessThanPartitions)-1]
+		b.WriteString(quoteSchemaObjectIdentifier(lastP))
 	}
-	buf.WriteString(";")
-	return buf.String()
+	b.WriteString(";")
+	return b.String()
 }
 
-func partName(t time.Time) string {
-	date := t.In(zone).Format(dateFormat)
+func buildPartitionName(t time.Time) string {
+	date := t.In(zone).Format("2006-01-02")
 	return quoteSchemaObjectIdentifier("p" + date)
 }
 
