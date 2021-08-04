@@ -15,8 +15,13 @@ import (
 
 const (
 	// 2000 clusters
-	insertStmtCacheSize           = 2000
-	mysqlErrCodeTableNotExist     = 1146
+	insertStmtCacheSize = 2000
+	// 1146 means no table exists. When a new TiDB cluster is created,
+	// generates the first slow log, and filebeat try to insert this log, this error will be triggered.
+	// Filebeat will try to create new table for the new cluster.
+	mysqlErrCodeTableNotExist = 1146
+	// 1526 means no partition. This error occurs when the latest partition boundary < timestamp of incoming slow log.
+	// Filebeat will try to create new partition.
 	mysqlErrCodePartitionNotExist = 1526
 	clusterIDFieldKey             = "kubernetes.namespace"
 	noClusterID                   = "NO_CLUSTER_ID"

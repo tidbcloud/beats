@@ -192,9 +192,5 @@ func buildPartitionName(t time.Time) string {
 }
 
 func quoteSchemaObjectIdentifier(word string) string {
-	b := strings.Builder{}
-	b.WriteString("`")
-	b.WriteString(word)
-	b.WriteString("`")
-	return b.String()
+	return fmt.Sprintf("`%s`", word)
 }
