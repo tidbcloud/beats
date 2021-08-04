@@ -51,23 +51,23 @@ type Config struct {
 }
 
 func (c Config) DSN() string {
-	mysqlConfig := mysql.Config{
-		User:         c.User,
-		Addr:         fmt.Sprintf("%s:%d", c.Host, c.Port),
-		Passwd:       c.Password,
-		DBName:       c.Database,
-		ParseTime:    true,
-		Loc:          time.UTC,
-		Timeout:      30 * time.Second,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 30 * time.Second,
-		Params: map[string]string{
-			"charset": "utf8mb4",
-		},
-		TLSConfig: tlsKey,
-	}
+	defaultConfig := mysql.NewConfig()
 
-	return mysqlConfig.FormatDSN()
+	defaultConfig.Net = "tcp"
+	defaultConfig.User = c.User
+	defaultConfig.Addr = fmt.Sprintf("%s:%d", c.Host, c.Port)
+	defaultConfig.Passwd = c.Password
+	defaultConfig.DBName = c.Database
+	defaultConfig.ParseTime = true
+	defaultConfig.Loc = time.UTC
+	defaultConfig.Timeout = 30 * time.Second
+	defaultConfig.ReadTimeout = 30 * time.Second
+	defaultConfig.WriteTimeout = 30 * time.Second
+	defaultConfig.Params = map[string]string{"charset": "utf8mb4"}
+	defaultConfig.Collation = "utf8mb4_bin"
+	defaultConfig.TLSConfig = tlsKey
+
+	return defaultConfig.FormatDSN()
 }
 
 func (c Config) isMutualTLSEnabled() bool {
