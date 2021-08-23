@@ -12,7 +12,7 @@ var (
 	schemaColumnTypes = map[string]string{
 		"Instance":                      "varchar(64)",
 		"Time":                          "timestamp(6)",
-		"Txn_start_ts":                  "double",
+		"Txn_start_ts":                  "bigint(20) unsigned",
 		"User":                          "varchar(64)",
 		"Host":                          "varchar(64)",
 		"Conn_ID":                       "double",
