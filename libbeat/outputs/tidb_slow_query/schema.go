@@ -15,7 +15,7 @@ var (
 		"Txn_start_ts":                  "bigint(20) unsigned",
 		"User":                          "varchar(64)",
 		"Host":                          "varchar(64)",
-		"Conn_ID":                       "double",
+		"Conn_ID":                       "bigint(20) unsigned",
 		"Exec_retry_count":              "double",
 		"Exec_retry_time":               "double",
 		"Query_time":                    "double",
