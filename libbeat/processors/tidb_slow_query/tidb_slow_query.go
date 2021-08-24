@@ -120,7 +120,7 @@ func (p processor) parseKVAndUpdateFields(event *beat.Event, lines []string) (co
 			k, v := match[1], match[2]
 			if len(k) > 0 && len(v) > 0 {
 				if k == "Txn_start_ts" || k == "Conn_ID" {
-					// hijack "Txn_start_ts" key
+					// hijack special keys
 					if num, err := strconv.ParseUint(v, 10, 64); err == nil {
 						extractedKV.Put(k, num)
 					}
