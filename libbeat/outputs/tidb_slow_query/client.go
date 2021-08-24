@@ -198,8 +198,16 @@ func (c *client) createTable(ctx context.Context, table string, curTime time.Tim
 	parts := calculateLessThanPartitionBoundary(curTime, c.rollStep)
 	sqlString := buildCreateTableStmt(c.database, table, parts)
 	_, err := c.conn.ExecContext(ctx, sqlString)
-	c.log.Info("create table ", sqlString, "error", err)
-	return err
+	if err != nil {
+		return err
+	}
+	tiFlashSqlString := buildEnableTiFlashStmt(c.database, table)
+	_, err = c.conn.ExecContext(ctx, tiFlashSqlString)
+	if err != nil {
+		return err
+	}
+	c.log.Infof("created table: %s, enable tiflash: %s", sqlString, tiFlashSqlString)
+	return nil
 }
 
 func (c *client) createPartitions(ctx context.Context, table string, curTime time.Time) error {

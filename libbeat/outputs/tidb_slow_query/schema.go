@@ -134,6 +134,10 @@ func buildCreateTableStmt(schema, table string, lessThanPartitions []time.Time) 
 	return b.String()
 }
 
+func buildEnableTiFlashStmt(schema, table string) string {
+	return fmt.Sprintf("ALTER TABLE `%s`.`%s` SET TIFLASH REPLICA 1;", schema, table)
+}
+
 func calculateLessThanPartitionBoundary(t time.Time, step int) []time.Time {
 	parts := make([]time.Time, 0, step)
 	// ensure start of the day at +8:00 timezone
