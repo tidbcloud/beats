@@ -168,6 +168,12 @@ func getFields(event publisher.Event) []interface{} {
 	for _, c := range orderedColumn {
 		// expect nil if fields not exist
 		v, _ := event.Content.GetValue(c)
+		// fixme: there is and inconsistency between slow log and CLUSTER_SLOW_QUERY table schema
+		// fixme: "User@Host" in logs   ---->    "User" in table
+		// fixme: hard code here
+		if c == "User" && v == nil {
+			v, _ = event.Content.GetValue("User@Host")
+		}
 		r = append(r, v)
 	}
 	return r
