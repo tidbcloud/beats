@@ -25,45 +25,48 @@ const (
 	mysqlErrCodePartitionNotExist = 1526
 	clusterIDFieldKey             = "kubernetes.namespace"
 	noClusterID                   = "NO_CLUSTER_ID"
+	retryCountKey                 = "retry"
 )
 
 type client struct {
-	db        *sql.DB
-	conn      *sql.Conn
-	observer  outputs.Observer
-	timeout   time.Duration
-	database  string
-	dsn       string
-	retention int
-	rollStep  int
-	stmtCache *lru.Cache
-	log       *logp.Logger
+	db         *sql.DB
+	conn       *sql.Conn
+	observer   outputs.Observer
+	timeout    time.Duration
+	database   string
+	dsn        string
+	retention  int
+	rollStep   int
+	maxRetries int
+	stmtCache  *lru.Cache
+	log        *logp.Logger
 }
 
 func newClient(
 	observer outputs.Observer,
 	timeout time.Duration,
 	database, dsn string,
-	retention, rollStep int,
+	retention, rollStep, maxRetries int,
 ) (*client, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
-	cache, err := lru.New(insertStmtCacheSize)
+	cache, err := lru.NewWithEvict(insertStmtCacheSize, evictStmtCallBack)
 	if err != nil {
 		return nil, err
 	}
 	c := &client{
-		observer:  observer,
-		timeout:   timeout,
-		database:  database,
-		db:        db,
-		dsn:       dsn,
-		retention: retention,
-		rollStep:  rollStep,
-		stmtCache: cache,
-		log:       logp.NewLogger("tidb_slow_query"),
+		observer:   observer,
+		timeout:    timeout,
+		database:   database,
+		db:         db,
+		dsn:        dsn,
+		retention:  retention,
+		rollStep:   rollStep,
+		maxRetries: maxRetries,
+		stmtCache:  cache,
+		log:        logp.NewLogger("tidb_slow_query"),
 	}
 	return c, nil
 }
@@ -94,10 +97,23 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// todo: support multi events from different cluster (with different table name)
 	event := batch.Events()[0]
 
+	// check if maxRetries is reached
+	if v, err := event.Cache.GetValue(retryCountKey); err == nil {
+		retryCount := v.(int)
+		if retryCount >= c.maxRetries {
+			c.observer.Dropped(1)
+			batch.Drop()
+			e := fmt.Errorf("drop event due to maxRetries reached")
+			c.log.Errorw(e.Error(), "event", event)
+			// explicitly dropping is not error
+			return e
+		}
+	}
+
 	clusterID, err := c.extractClusterID(event)
 	if err != nil {
 		c.observer.Dropped(1)
-		batch.Cancelled()
+		batch.Drop()
 		return err
 	}
 	table := c.buildTableName(clusterID)
@@ -107,9 +123,7 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 		sqlString := buildInsertStmt(c.database, table)
 		s, err := c.conn.PrepareContext(ctx, sqlString)
 		if err != nil {
-			newErr := c.handleInsertError(err, ctx, table, event)
-			batch.RetryEvents(batch.Events())
-			return newErr
+			return c.handleInsertError(err, ctx, table, batch)
 		}
 		c.stmtCache.Add(table, s)
 	}
@@ -121,9 +135,7 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// execute statement
 	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields...)
 	if executionErr != nil {
-		newErr := c.handleInsertError(executionErr, ctx, table, event)
-		batch.RetryEvents(batch.Events())
-		return newErr
+		return c.handleInsertError(executionErr, ctx, table, batch)
 	}
 
 	c.observer.NewBatch(1)
@@ -133,7 +145,7 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 
 // handle no-table-or-partition error -- create them
 // re-throw other unexpected error
-func (c *client) handleInsertError(err error, ctx context.Context, table string, event publisher.Event) error {
+func (c *client) handleInsertError(err error, ctx context.Context, table string, batch publisher.Batch) error {
 	if err == nil {
 		return nil
 	}
@@ -152,15 +164,32 @@ func (c *client) handleInsertError(err error, ctx context.Context, table string,
 		return err
 	}
 
-	// create table/partition, could wait for a while
+	newErr := err
 	switch mysqlErr.Number {
+	// create table/partition, could wait for a while
 	case mysqlErrCodePartitionNotExist:
-		return c.createPartitions(ctx, table, event.Content.Timestamp)
+		err = c.createPartitions(ctx, table, batch.Events()[0].Content.Timestamp)
 	case mysqlErrCodeTableNotExist:
-		return c.createTable(ctx, table, event.Content.Timestamp)
+		err = c.createTable(ctx, table, batch.Events()[0].Content.Timestamp)
 	default:
-		return mysqlErr
 	}
+
+	// retry count ++
+	var currRetry int
+	if v, err := batch.Events()[0].Cache.GetValue(retryCountKey); err == nil {
+		currRetry = v.(int)
+	} else {
+		currRetry = 0
+	}
+	batch.Events()[0].Cache.Put(retryCountKey, currRetry+1)
+
+	batch.RetryEvents(batch.Events())
+	return newErr
+}
+
+func evictStmtCallBack(_, v interface{}) {
+	stmt := v.(*sql.Stmt)
+	stmt.Close()
 }
 
 func getFields(event publisher.Event) []interface{} {
