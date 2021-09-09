@@ -45,7 +45,7 @@ func makeTiDB(
 			return outputs.Fail(err)
 		}
 	}
-	c, err := newClient(observer, config.Timeout, config.Database, config.DSN(), config.Partition.Retention, config.Partition.RollStep)
+	c, err := newClient(observer, config.Timeout, config.Database, config.DSN(), config.Partition.Retention, config.Partition.RollStep, config.MaxRetries)
 	if err != nil {
 		return outputs.Fail(err)
 	}
