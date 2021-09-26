@@ -115,7 +115,7 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	sqlStmt, _ := c.stmtCache.Get(table)
 
 	// get placeholder arguments
-	fields := getFields(event)
+	fields := convertEventToModel(event)
 
 	// execute statement
 	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields...)
@@ -170,7 +170,7 @@ func (c *client) handleMysqlError(err error, ctx context.Context, table string, 
 	return mysqlErr
 }
 
-func getFields(event publisher.Event) []interface{} {
+func convertEventToModel(event publisher.Event) []interface{} {
 	r := make([]interface{}, 0, len(orderedColumn))
 	for _, c := range orderedColumn {
 		// expect nil if fields not exist
@@ -181,6 +181,13 @@ func getFields(event publisher.Event) []interface{} {
 		if c == "User" && v == nil {
 			v, _ = event.Content.GetValue("User@Host")
 		}
+		// ensure safety for string length
+		if s, ok := v.(string); ok {
+			if l, ok := maxLength[c]; ok && len(s) >= l {
+				v = s[:l]
+			}
+		}
+
 		r = append(r, v)
 	}
 	return r

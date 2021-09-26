@@ -80,6 +80,20 @@ var (
 		"Rocksdb_block_read_count":      "double",
 		"Rocksdb_block_read_byte":       "double",
 	}
+	maxLength = map[string]int{
+		"Instance":       64,
+		"User":           64,
+		"Host":           64,
+		"Backoff_types":  64,
+		"DB":             64,
+		"Index_names":    128,
+		"Digest":         64,
+		"Stats":          512,
+		"Cop_proc_addr":  64,
+		"Cop_wait_addr":  64,
+		"Plan_digest":    128,
+		"Backoff_Detail": 4096,
+	}
 	orderedColumn = make([]string, 0, len(schemaColumnTypes))
 	zone, _       = time.LoadLocation("UTC")
 )
