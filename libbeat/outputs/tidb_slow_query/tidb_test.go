@@ -130,7 +130,7 @@ func TestConsoleOutput(t *testing.T) {
 
 func run(codec codec.Codec, batches ...publisher.Batch) (string, error) {
 	return withStdout(func() {
-		c, _ := newClient(outputs.NewNilObserver(), time.Second, "dummy", "dsn://dummy", 0, 0, 0)
+		c, _ := newClient(outputs.NewNilObserver(), time.Second, "dummy", "dsn://dummy", 0, 0)
 		for _, b := range batches {
 			c.Publish(context.Background(), b)
 		}

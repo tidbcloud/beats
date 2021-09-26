@@ -34,7 +34,7 @@ select variable_name, variable_value from mysql.global_variables where variable_
 # Parse_time: 0.000194899
 # Compile_time: 0.000367044
 # Cop_time: 25.500627275 Backoff_time: 25.463 Request_count: 1 Total_keys: 1
-# Index_names: [bind_info:time_index]
+# Index_names: [h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2]
 # Is_internal: true
 # Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
 # Stats: bind_info:pseudo
@@ -301,7 +301,7 @@ begin;
 # Parse_time: 0.000081418
 # Compile_time: 0.000302482
 # Cop_time: 0.001432914 Request_count: 1 Total_keys: 1
-# Index_names: [bind_info:time_index]
+# Index_names: [h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2]
 # Is_internal: true
 # Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
 # Stats: bind_info:pseudo
@@ -412,7 +412,7 @@ alter table clusters add column poc_deleted bool DEFAULT false;
 # Parse_time: 0.000075916
 # Compile_time: 0.000248434
 # Cop_time: 0.002670832 Request_count: 2 Total_keys: 5 Process_keys: 2
-# Index_names: [stats_meta:idx_ver]
+# Index_names: [h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2]
 # Is_internal: true
 # Digest: f0b4536b9ca2b2cf8b0b4580fa5a6804ace888b4601ce93f17b17f18409e96f0
 # Stats: stats_meta:pseudo
@@ -451,7 +451,7 @@ select variable_name, variable_value from mysql.global_variables where variable_
 # Compile_time: 0.000361931
 # Cop_time: 0.337299487 Request_count: 2
 # DB: dbaas
-# Index_names: [clusters:name_tenant]
+# Index_names: [h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2]
 # Is_internal: false
 # Digest: c51d41489a232baa88b7229d0972b9bba9ee0960114d7c01a76464e956edd4d5
 # Stats: clusters:pseudo,cluster_operations:pseudo
@@ -712,7 +712,7 @@ select original_sql, bind_sql, default_db, status, create_time, update_time, cha
 # Parse_time: 0.000077721
 # Compile_time: 0.000258835
 # Cop_time: 0.00057867 Request_count: 1 Total_keys: 1
-# Index_names: [bind_info:time_index]
+# Index_names: [h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2]
 # Is_internal: true
 # Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
 # Stats: bind_info:pseudo
@@ -748,7 +748,7 @@ select HIGH_PRIORITY * from mysql.global_variables where variable_name in ('auto
 # Parse_time: 0.000206405
 # Compile_time: 0.000290598
 # Cop_time: 3.334279035 Request_count: 1 Total_keys: 1
-# Index_names: [bind_info:time_index]
+# Index_names: [h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2]
 # Is_internal: true
 # Digest: e0cf0e2dccc824f34e52c6341356354f77cce9342074b393bc0185304e075ea3
 # Stats: bind_info:pseudo
@@ -795,7 +795,7 @@ SELECT * FROM `clusters` WHERE clusters.status NOT IN (?,?) AND clusters.status 
 # Compile_time: 0.000153857
 # Cop_time: 2.980682644 Request_count: 2
 # DB: dbaas
-# Index_names: [component_machines:idx_component_machines_component_id]
+# Index_names: [h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2,h09_user_order_cz:state_2]
 # Is_internal: false
 # Digest: 33c3a85ccfc3f1f4f2fc585bc67ea20511b0671a8edc8558ac75710fcebdd2a6
 # Stats: component_machines:pseudo
