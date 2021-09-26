@@ -25,53 +25,51 @@ const (
 	mysqlErrCodePartitionNotExist = 1526
 	clusterIDFieldKey             = "kubernetes.namespace"
 	noClusterID                   = "NO_CLUSTER_ID"
-	retryCountKey                 = "retry"
 )
 
 type client struct {
-	db         *sql.DB
-	conn       *sql.Conn
-	observer   outputs.Observer
-	timeout    time.Duration
-	database   string
-	dsn        string
-	retention  int
-	rollStep   int
-	maxRetries int
-	stmtCache  *lru.Cache
-	log        *logp.Logger
+	db        *sql.DB
+	conn      *sql.Conn
+	observer  outputs.Observer
+	timeout   time.Duration
+	database  string
+	dsn       string
+	retention int
+	rollStep  int
+	stmtCache *lru.Cache
+	log       *logp.Logger
 }
 
-func newClient(
-	observer outputs.Observer,
-	timeout time.Duration,
-	database, dsn string,
-	retention, rollStep, maxRetries int,
-) (*client, error) {
+func newClient(observer outputs.Observer, timeout time.Duration, database, dsn string, retention, rollStep int) (*client, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
-	cache, err := lru.NewWithEvict(insertStmtCacheSize, evictStmtCallBack)
+	cache, err := lru.NewWithEvict(
+		insertStmtCacheSize,
+		func(_, v interface{}) {
+			stmt := v.(*sql.Stmt)
+			stmt.Close()
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
 	c := &client{
-		observer:   observer,
-		timeout:    timeout,
-		database:   database,
-		db:         db,
-		dsn:        dsn,
-		retention:  retention,
-		rollStep:   rollStep,
-		maxRetries: maxRetries,
-		stmtCache:  cache,
-		log:        logp.NewLogger("tidb_slow_query"),
+		observer:  observer,
+		timeout:   timeout,
+		database:  database,
+		db:        db,
+		dsn:       dsn,
+		retention: retention,
+		rollStep:  rollStep,
+		stmtCache: cache,
+		log:       logp.NewLogger("tidb_slow_query"),
 	}
 	return c, nil
 }
 
-// Connect try to create a new connection and replace the conn field
+// Connect try to create a new connection and replace the "conn" field
 func (c *client) Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
@@ -97,22 +95,9 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// todo: support multi events from different cluster (with different table name)
 	event := batch.Events()[0]
 
-	// check if maxRetries is reached
-	if v, err := event.Cache.GetValue(retryCountKey); err == nil {
-		retryCount := v.(int)
-		if retryCount >= c.maxRetries {
-			c.observer.Dropped(1)
-			batch.Drop()
-			e := fmt.Errorf("drop event due to maxRetries reached")
-			c.log.Errorw(e.Error(), "event", event)
-			// explicitly dropping is not error
-			return e
-		}
-	}
-
 	clusterID, err := c.extractClusterID(event)
 	if err != nil {
-		c.observer.Dropped(1)
+		c.observer.Dropped(len(batch.Events()))
 		batch.Drop()
 		return err
 	}
@@ -123,7 +108,7 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 		sqlString := buildInsertStmt(c.database, table)
 		s, err := c.conn.PrepareContext(ctx, sqlString)
 		if err != nil {
-			return c.handleInsertError(err, ctx, table, batch)
+			return c.handleMysqlError(err, ctx, table, batch)
 		}
 		c.stmtCache.Add(table, s)
 	}
@@ -135,17 +120,17 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	// execute statement
 	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields...)
 	if executionErr != nil {
-		return c.handleInsertError(executionErr, ctx, table, batch)
+		return c.handleMysqlError(executionErr, ctx, table, batch)
 	}
 
-	c.observer.NewBatch(1)
+	c.observer.NewBatch(len(batch.Events()))
 	batch.ACK()
 	return nil
 }
 
-// handle no-table-or-partition error -- create them
-// re-throw other unexpected error
-func (c *client) handleInsertError(err error, ctx context.Context, table string, batch publisher.Batch) error {
+// handle no-table-or-partition error and do creation
+// drop the batch if other errors occurs
+func (c *client) handleMysqlError(err error, ctx context.Context, table string, batch publisher.Batch) error {
 	if err == nil {
 		return nil
 	}
@@ -153,43 +138,36 @@ func (c *client) handleInsertError(err error, ctx context.Context, table string,
 	// delete corrupted cached stmt
 	c.stmtCache.Remove(table)
 
-	// connection will corrupt when error occurs
-	// try to reconnect
+	// connection will corrupt when error occurs, try to reconnect
 	if err := c.Connect(); err != nil {
+		c.observer.Dropped(len(batch.Events()))
+		batch.Drop()
 		return err
 	}
 
 	mysqlErr, ok := err.(*mysql.MySQLError)
 	if !ok {
+		// drop if not a mysql error
+		c.observer.Dropped(len(batch.Events()))
+		batch.Drop()
 		return err
 	}
 
-	newErr := err
 	switch mysqlErr.Number {
 	// create table/partition, could wait for a while
 	case mysqlErrCodePartitionNotExist:
 		err = c.createPartitions(ctx, table, batch.Events()[0].Content.Timestamp)
+		batch.RetryEvents(batch.Events())
 	case mysqlErrCodeTableNotExist:
 		err = c.createTable(ctx, table, batch.Events()[0].Content.Timestamp)
+		batch.RetryEvents(batch.Events())
 	default:
+		// drop if other error numbers
+		c.observer.Dropped(len(batch.Events()))
+		batch.Drop()
 	}
 
-	// retry count ++
-	var currRetry int
-	if v, err := batch.Events()[0].Cache.GetValue(retryCountKey); err == nil {
-		currRetry = v.(int)
-	} else {
-		currRetry = 0
-	}
-	batch.Events()[0].Cache.Put(retryCountKey, currRetry+1)
-
-	batch.RetryEvents(batch.Events())
-	return newErr
-}
-
-func evictStmtCallBack(_, v interface{}) {
-	stmt := v.(*sql.Stmt)
-	stmt.Close()
+	return mysqlErr
 }
 
 func getFields(event publisher.Event) []interface{} {
