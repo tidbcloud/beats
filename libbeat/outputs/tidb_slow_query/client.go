@@ -80,6 +80,10 @@ func (c *client) Connect() error {
 	if err != nil {
 		return err
 	}
+	// Caution! close the broken connection before replacing the reference
+	if c.conn != nil {
+		c.conn.Close()
+	}
 	c.conn = conn
 	return nil
 }
