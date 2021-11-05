@@ -24,6 +24,7 @@ func newBackoffClient(client *client, init, max time.Duration) *backoffClient {
 	}
 }
 
+// Connect is called by pipeline.netClientWorker.run()
 func (b *backoffClient) Connect() error {
 	err := b.client.Connect()
 	if err != nil {
@@ -41,6 +42,9 @@ func (b *backoffClient) Close() error {
 	return err
 }
 
+// Publish does following:
+//   - close the wrapped client on error
+//   - wait for a period of time before retrying
 func (b *backoffClient) Publish(ctx context.Context, batch publisher.Batch) error {
 	err := b.client.Publish(ctx, batch)
 	if err != nil {

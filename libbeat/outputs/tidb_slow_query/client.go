@@ -8,14 +8,11 @@ import (
 	"github.com/elastic/beats/v7/libbeat/outputs"
 	"github.com/elastic/beats/v7/libbeat/publisher"
 	"github.com/go-sql-driver/mysql"
-	lru "github.com/hashicorp/golang-lru"
 	"strings"
 	"time"
 )
 
 const (
-	// 2000 clusters
-	insertStmtCacheSize = 2000
 	// 1146 means no table exists. When a new TiDB cluster is created,
 	// generates the first slow log, and filebeat try to insert this log, this error will be triggered.
 	// Filebeat will try to create new table for the new cluster.
@@ -25,6 +22,9 @@ const (
 	mysqlErrCodePartitionNotExist = 1526
 	clusterIDFieldKey             = "kubernetes.namespace"
 	noClusterID                   = "NO_CLUSTER_ID"
+	// Since all functions here are called by a singleton worker thread,
+	// Limit the number of max connections to 1
+	maxConnections = 2
 )
 
 type client struct {
@@ -36,7 +36,6 @@ type client struct {
 	dsn       string
 	retention int
 	rollStep  int
-	stmtCache *lru.Cache
 	log       *logp.Logger
 }
 
@@ -45,16 +44,10 @@ func newClient(observer outputs.Observer, timeout time.Duration, database, dsn s
 	if err != nil {
 		return nil, err
 	}
-	cache, err := lru.NewWithEvict(
-		insertStmtCacheSize,
-		func(_, v interface{}) {
-			stmt := v.(*sql.Stmt)
-			stmt.Close()
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
+
+	db.SetMaxIdleConns(maxConnections)
+	db.SetMaxOpenConns(maxConnections)
+
 	c := &client{
 		observer:  observer,
 		timeout:   timeout,
@@ -63,7 +56,6 @@ func newClient(observer outputs.Observer, timeout time.Duration, database, dsn s
 		dsn:       dsn,
 		retention: retention,
 		rollStep:  rollStep,
-		stmtCache: cache,
 		log:       logp.NewLogger("tidb_slow_query"),
 	}
 	return c, nil
@@ -73,16 +65,9 @@ func newClient(observer outputs.Observer, timeout time.Duration, database, dsn s
 func (c *client) Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
-	if c.conn != nil && c.conn.PingContext(ctx) == nil {
-		return nil
-	}
 	conn, err := c.db.Conn(ctx)
 	if err != nil {
 		return err
-	}
-	// Caution! close the broken connection before replacing the reference
-	if c.conn != nil {
-		c.conn.Close()
 	}
 	c.conn = conn
 	return nil
@@ -96,7 +81,6 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	ctx, cancel := context.WithTimeout(ct, c.timeout)
 	defer cancel()
 
-	// todo: support multi events from different cluster (with different table name)
 	event := batch.Events()[0]
 
 	clusterID, err := c.extractClusterID(event)
@@ -107,22 +91,11 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 	}
 	table := c.buildTableName(clusterID)
 
-	// get driver statement
-	if !c.stmtCache.Contains(table) {
-		sqlString := buildInsertStmt(c.database, table)
-		s, err := c.conn.PrepareContext(ctx, sqlString)
-		if err != nil {
-			return c.handleMysqlError(err, ctx, table, batch)
-		}
-		c.stmtCache.Add(table, s)
-	}
-	sqlStmt, _ := c.stmtCache.Get(table)
-
 	// get placeholder arguments
 	fields := convertEventToModel(event)
 
 	// execute statement
-	_, executionErr := sqlStmt.(*sql.Stmt).ExecContext(ctx, fields...)
+	_, executionErr := c.conn.ExecContext(ctx, buildInsertStmt(c.database, table), fields...)
 	if executionErr != nil {
 		return c.handleMysqlError(executionErr, ctx, table, batch)
 	}
@@ -135,20 +108,6 @@ func (c *client) Publish(ct context.Context, batch publisher.Batch) error {
 // handle no-table-or-partition error and do creation
 // drop the batch if other errors occurs
 func (c *client) handleMysqlError(err error, ctx context.Context, table string, batch publisher.Batch) error {
-	if err == nil {
-		return nil
-	}
-
-	// delete corrupted cached stmt
-	c.stmtCache.Remove(table)
-
-	// connection will corrupt when error occurs, try to reconnect
-	if err := c.Connect(); err != nil {
-		c.observer.Dropped(len(batch.Events()))
-		batch.Drop()
-		return err
-	}
-
 	mysqlErr, ok := err.(*mysql.MySQLError)
 	if !ok {
 		// drop if not a mysql error
