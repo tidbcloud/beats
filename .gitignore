@@ -13,6 +13,7 @@
 x-pack/functionbeat/pkg
 x-pack/elastic-agent/data
 x-pack/elastic-agent/pkg/agent/operation/tests/downloads
+/__local_home
 
 # Files
 .DS_Store
@@ -32,6 +33,7 @@ x-pack/elastic-agent/elastic_agent
 x-pack/elastic-agent/fleet.yml
 x-pack/elastic-agent/pkg/agent/operation/tests/scripts/configurable-1.0-darwin-x86_64/configurable
 x-pack/elastic-agent/pkg/agent/operation/tests/scripts/serviceable-1.0-darwin-x86_64/serviceable
+*.iml
 
 # Editor swap files
 *.swp

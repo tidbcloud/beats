@@ -1,0 +1,17 @@
+filebeat.inputs:
+  - type: stdin
+    multiline.type: pattern
+    multiline.pattern: '^# Time: '
+    multiline.negate: true
+    multiline.match: after
+    multiline.timeout: 1s
+
+processors:
+  - tidb_slow_query:
+
+output.console:
+  pretty: true
+
+path.home: ./__local_home
+logging.level: info
+logging.metrics.enabled: false

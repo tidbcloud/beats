@@ -1,0 +1,41 @@
+filebeat.inputs:
+  - type: filestream
+    paths:
+      - ./deploy/localtest/test_input_01.log
+    parsers:
+      - multiline.type: pattern
+        multiline.pattern: '^# Time: '
+        multiline.negate: true
+        multiline.match: after
+    processors:
+      - add_fields:
+          target: kubernetes
+          fields:
+            pod:
+              name: db-tidb-1
+            namespace: tidb1369682775200135353
+
+processors:
+  - tidb_slow_query:
+
+output.tidb_slow_query:
+  host: tidb.12c97f40.cb17aaf2.us-west-2.prod.aws.tidbcloud.com
+  port: 4000
+  user: root
+  password: [PWD]
+  database: slow_query_dev
+  timeout: 30s
+  ca_path: ./deploy/localtest/ca.crt
+  client_cert_path: ./deploy/localtest/tls.crt
+  client_key_path: ./deploy/localtest/tls.key
+  max_retries: 3
+  backoff:
+    init: 1s
+    max: 10s
+  partition:
+    retention: 365
+    roll_step: 3
+
+path.home: ./__local_home
+logging.level: info
+logging.metrics.enabled: false
