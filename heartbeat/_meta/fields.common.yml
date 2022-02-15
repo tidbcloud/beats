@@ -92,6 +92,13 @@
           type: integer
           description: >
             The number of endpoints that failed
+- key: service
+  title: "APM Service"
+  description:
+  fields:
+    - name: name
+      type: keyword
+      description: APM service name this monitor is linked to
 
 - key: resolve
   title: "Host lookup"
@@ -154,6 +161,9 @@
           fields:
             - name: name
               type: text
+              multi_fields:
+                - name: keyword
+                  type: keyword
             - name: index
               type: integer
             - name: status
@@ -475,7 +485,6 @@
               ignore_above: 1024
               description: Version of x509 format.
               example: 3
-              default_field: false
 
 - key: icmp
   title: "ICMP"

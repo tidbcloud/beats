@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+//go:build integration && linux
 // +build integration,linux
 
 package state_cronjob
@@ -29,7 +30,7 @@ import (
 )
 
 func TestFetchMetricset(t *testing.T) {
-	config := test.GetKubeStateMetricsConfig(t, "state_cronjob")
+	config := test.GetKubeStateMetricsConfigWithMetaDisabled(t, "state_cronjob")
 	metricSet := mbtest.NewFetcher(t, config)
 	events, errs := metricSet.FetchEvents()
 	if len(errs) > 0 {

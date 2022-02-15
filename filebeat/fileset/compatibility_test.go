@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+//go:build !integration
 // +build !integration
 
 package fileset
@@ -127,7 +128,7 @@ func TestAdaptPipelineForCompatibility(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -304,7 +305,7 @@ func TestReplaceSetIgnoreEmptyValue(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -506,7 +507,7 @@ func TestReplaceAppendAllowDuplicates(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -631,7 +632,7 @@ func TestRemoveURIPartsProcessor(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -766,7 +767,7 @@ func TestRemoveNetworkDirectionProcessor(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -949,7 +950,7 @@ func TestReplaceConvertIPWithGrok(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -1069,7 +1070,7 @@ func TestRemoveRegisteredDomainProcessor(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -1330,7 +1331,7 @@ func TestReplaceAlternativeFlowProcessors(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {
@@ -1445,7 +1446,7 @@ func TestRemoveDescription(t *testing.T) {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
-			err := adaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
+			err := AdaptPipelineForCompatibility(*test.esVersion, "foo-pipeline", test.content, logp.NewLogger(logName))
 			if test.isErrExpected {
 				assert.Error(t, err)
 			} else {

@@ -15,13 +15,12 @@ pipeline {
     durabilityHint('PERFORMANCE_OPTIMIZED')
   }
   triggers {
-    cron('H H(1-4) * * 0')
+    cron('H H(1-2) * * 0')
   }
   stages {
-    stage('Nighly beats builds') {
+    stage('Weekly beats builds') {
       steps {
-        build(quietPeriod: 0, job: 'Beats/beats/master', parameters: [booleanParam(name: 'awsCloudTests', value: true)], wait: false, propagate: false)
-        build(quietPeriod: 1000, job: 'Beats/beats/7.x', parameters: [booleanParam(name: 'awsCloudTests', value: true)], wait: false, propagate: false)
+        runBuilds(quietPeriodFactor: 1000, branches: ['main', '8.<minor>', '7.<minor>', '7.<next-minor>'])
       }
     }
   }
@@ -30,4 +29,39 @@ pipeline {
       notifyBuildResult(prComment: false)
     }
   }
+}
+
+def runBuilds(Map args = [:]) {
+  def branches = []
+  // Expand macros and filter duplicated matches.
+  args.branches.each { branch ->
+    def branchName = getBranchName(branch)
+    if (!branches.contains(branchName)) {
+      branches << branchName
+    }
+  }
+
+  def quietPeriod = 0
+  branches.each { branch ->
+    build(quietPeriod: quietPeriod, job: "Beats/beats/${branch}", parameters: [booleanParam(name: 'awsCloudTests', value: true)], wait: false, propagate: false)
+    // Increate the quiet period for the next iteration
+    quietPeriod += args.quietPeriodFactor
+  }
+}
+
+def getBranchName(branch) {
+  // special macro to look for the latest minor version
+  if (branch.contains('8.<minor>')) {
+   return bumpUtils.getMajorMinor(bumpUtils.getCurrentMinorReleaseFor8())
+  }
+  if (branch.contains('8.<next-minor>')) {
+    return bumpUtils.getMajorMinor(bumpUtils.getNextMinorReleaseFor8())
+  }
+  if (branch.contains('7.<minor>')) {
+    return bumpUtils.getMajorMinor(bumpUtils.getCurrentMinorReleaseFor7())
+  }
+  if (branch.contains('7.<next-minor>')) {
+    return bumpUtils.getMajorMinor(bumpUtils.getNextMinorReleaseFor7())
+  }
+  return branch
 }

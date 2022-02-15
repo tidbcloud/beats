@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+//go:build integration
 // +build integration
 
 package filestream
@@ -247,8 +248,6 @@ The total should be 4 lines covered
 
 // test_rabbitmq_multiline_log from test_multiline.py
 func TestParsersRabbitMQMultilineLog(t *testing.T) {
-	t.Skip("Flaky test: https://github.com/elastic/beats/issues/27893")
-
 	env := newInputTestingEnvironment(t)
 
 	testlogName := "test.log"
@@ -262,7 +261,7 @@ func TestParsersRabbitMQMultilineLog(t *testing.T) {
 					"pattern": "^=[A-Z]+",
 					"negate":  true,
 					"match":   "after",
-					"timeout": "100ms", // set to lower value to speed up test
+					"timeout": "3s", // set to lower value to speed up test
 				},
 			},
 		},
@@ -293,8 +292,6 @@ connection <0.23893.109>, channel 3 - soft error:
 
 // test_max_lines from test_multiline.py
 func TestParsersMultilineMaxLines(t *testing.T) {
-	t.Skip("Flaky test: https://github.com/elastic/beats/issues/27894")
-
 	env := newInputTestingEnvironment(t)
 
 	testlogName := "test.log"
@@ -309,7 +306,7 @@ func TestParsersMultilineMaxLines(t *testing.T) {
 					"negate":    true,
 					"match":     "after",
 					"max_lines": 3,
-					"timeout":   "100ms", // set to lower value to speed up test
+					"timeout":   "3s", // set to lower value to speed up test
 				},
 			},
 		},
@@ -415,7 +412,7 @@ func TestParsersMultilineMaxBytes(t *testing.T) {
 					"pattern": "^\\[",
 					"negate":  true,
 					"match":   "after",
-					"timeout": "100ms", // set to lower value to speed up test
+					"timeout": "3s", // set to lower value to speed up test
 				},
 			},
 		},
@@ -448,7 +445,7 @@ func TestParsersCloseTimeoutWithMultiline(t *testing.T) {
 	inp := env.mustCreateInput(map[string]interface{}{
 		"paths":                             []string{env.abspath(testlogName)},
 		"prospector.scanner.check_interval": "1ms",
-		"close.reader.after_interval":       "100ms",
+		"close.reader.after_interval":       "1s",
 		"parsers": []map[string]interface{}{
 			map[string]interface{}{
 				"multiline": map[string]interface{}{
@@ -505,7 +502,6 @@ func TestParsersCloseTimeoutWithMultiline(t *testing.T) {
 
 // test_consecutive_newline from test_multiline.py
 func TestParsersConsecutiveNewline(t *testing.T) {
-	t.Skip("Flaky test: https://github.com/elastic/beats/issues/27085")
 
 	env := newInputTestingEnvironment(t)
 
@@ -513,6 +509,7 @@ func TestParsersConsecutiveNewline(t *testing.T) {
 	inp := env.mustCreateInput(map[string]interface{}{
 		"paths":                             []string{env.abspath(testlogName)},
 		"prospector.scanner.check_interval": "1ms",
+		"close.reader.after_interval":       "1s",
 		"parsers": []map[string]interface{}{
 			map[string]interface{}{
 				"multiline": map[string]interface{}{
@@ -520,7 +517,7 @@ func TestParsersConsecutiveNewline(t *testing.T) {
 					"pattern": "^\\[",
 					"negate":  true,
 					"match":   "after",
-					"timeout": "100ms", // set to lower value to speed up test
+					"timeout": "3s", // set to lower value to speed up test
 				},
 			},
 		},

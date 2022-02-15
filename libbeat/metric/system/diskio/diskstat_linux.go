@@ -15,13 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
+//go:build linux
 // +build linux
 
 package diskio
 
 import (
 	"github.com/pkg/errors"
-	"github.com/shirou/gopsutil/disk"
+	"github.com/shirou/gopsutil/v3/disk"
 
 	"github.com/elastic/beats/v7/libbeat/metric/system/numcpu"
 )

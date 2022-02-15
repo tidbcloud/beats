@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// +build !integration
-// +build linux
+//go:build !integration && linux
+// +build !integration,linux
 
 package diskio
 
 import (
 	"testing"
 
-	"github.com/shirou/gopsutil/disk"
+	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/stretchr/testify/assert"
 
 	sigar "github.com/elastic/gosigar"
