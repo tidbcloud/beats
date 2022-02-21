@@ -168,6 +168,7 @@ pipeline {
                   PLATFORMS = [
                     '+all',
                     'darwin/amd64',
+                    'darwin/arm64',
                   ].join(' ')
                 }
                 steps {
