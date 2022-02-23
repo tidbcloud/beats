@@ -123,7 +123,7 @@ var OSArchNames = map[string]map[PackageType]map[string]string{
 		TarGz: map[string]string{
 			"386":       "x86",
 			"amd64":     "x86_64",
-			"arm64":     "arm64",
+			"arm64":     "aarch64",
 			"universal": "universal",
 		},
 	},
@@ -590,7 +590,7 @@ func PackageTarGz(spec PackageSpec) error {
 	w := tar.NewWriter(buf)
 	baseDir := spec.rootDir()
 
-	// Replace the darwin-universal by darwin-x86_64 and darwin-arm64 and
+	// Replace the darwin-universal by darwin-x86_64 and darwin-arm64. Also
 	// keep the other files.
 	if spec.Name == "elastic-agent" && spec.OS == "darwin" && spec.Arch == "universal" {
 		newFiles := map[string]PackageFile{}
@@ -599,7 +599,7 @@ func PackageTarGz(spec PackageSpec) error {
 				strings.Contains(pkgFile.Target, "downloads") {
 
 				amdFilename, amdpkgFile := replaceFileArch(filename, pkgFile, "x86_64")
-				armFilename, armpkgFile := replaceFileArch(filename, pkgFile, "arm64")
+				armFilename, armpkgFile := replaceFileArch(filename, pkgFile, "aarch64")
 
 				newFiles[amdFilename] = amdpkgFile
 				newFiles[armFilename] = armpkgFile
