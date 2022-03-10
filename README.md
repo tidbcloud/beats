@@ -10,7 +10,7 @@ All development happens under the `tidbcloud` namespace.
 
 - `tidbcloud/master`: The default branch which maps to the nightly dev environment.
 - `tidbcloud/staging`: The staging environment.
-- `tidbcloud/prod`: The staging environment.
+- `tidbcloud/prod`: The prod environment.
 
 ---
 
