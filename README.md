@@ -1,12 +1,13 @@
 # Filebeat on TiDB Cloud
 
-- A fully supported TiDB module for Filebeat.
+- A TiDB module which covers TiDB and its ecosystem tools.
+- A TiKV module (TiKV and PD).
 - Support both docker container runtime and on-premise bare-metal runtime.
 - Based on the `v7.17.0` community release (to maintain compatible with AWS Opensearch `v1.x.x`).
 
 ## Branch Policy
 
-All development happens under the `tidbcloud` namespace.
+All developments are under the `tidbcloud` namespace.
 
 - `tidbcloud/master`: The default branch which maps to the nightly dev environment.
 - `tidbcloud/staging`: The staging environment.
