@@ -1,6 +1,18 @@
-[![Build Status](https://beats-ci.elastic.co/job/Beats/job/beats/job/7.17/badge/icon)](https://beats-ci.elastic.co/job/Beats/job/beats/job/7.17/)
-[![GoReportCard](http://goreportcard.com/badge/elastic/beats)](http://goreportcard.com/report/elastic/beats)
-[![codecov.io](https://codecov.io/github/elastic/beats/coverage.svg?branch=master)](https://codecov.io/github/elastic/beats?branch=master)
+# Filebeat on TiDB Cloud
+
+- A fully supported TiDB module for Filebeat.
+- Support both docker container runtime and on-premise bare-metal runtime.
+- Based on the `v7.17.0` community release (to maintain compatible with AWS Opensearch `v1.x.x`).
+
+## Branch Policy
+
+All development happens under the `tidbcloud` namespace.
+
+- `tidbcloud/master`: The default branch which maps to the nightly dev environment.
+- `tidbcloud/staging`: The staging environment.
+- `tidbcloud/prod`: The staging environment.
+
+---
 
 # Beats - The Lightweight Shippers of the Elastic Stack
 
