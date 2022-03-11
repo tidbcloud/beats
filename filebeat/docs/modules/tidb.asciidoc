@@ -1,0 +1,20 @@
+////
+This file is generated! See scripts/docs_collector.py
+////
+
+[[filebeat-module-tidb]]
+:modulename: tidb
+:has-dashboards: false
+
+== TiDB module
+
+The +{modulename}+ module collects and parses the slow logs and other runtime logs
+created by https://pingcap.com/products/tidb[TiDB].
+
+
+[float]
+=== Fields
+
+For a description of each field in the module, see the
+<<exported-fields-tidb,exported fields>> section.
+

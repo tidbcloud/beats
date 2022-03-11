@@ -1,0 +1,7 @@
+:modulename: tidb
+:has-dashboards: false
+
+== TiDB module
+
+The +{modulename}+ module collects and parses the slow logs and other runtime logs
+created by https://pingcap.com/products/tidb[TiDB].
