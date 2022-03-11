@@ -13,6 +13,12 @@ All developments are under the `tidbcloud` namespace.
 - `tidbcloud/staging`: The staging environment.
 - `tidbcloud/prod`: The prod environment.
 
+## Build Docker Image
+
+`dev-tools/packaging/packages.yml` have been modified . And now running `make release` command generates two images:
+
+-
+
 ---
 
 # Beats - The Lightweight Shippers of the Elastic Stack
