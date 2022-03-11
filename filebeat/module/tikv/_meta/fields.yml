@@ -1,0 +1,16 @@
+- key: tikv
+  title: "TiKV"
+  description: >
+    TiKV Module
+  short_config: true
+  fields:
+    - name: tikv
+      type: group
+      description: >
+        Common fields in the TiKV Module.
+      fields:
+        - name: body
+          type: text
+          description: >
+            A fail-over field.
+            Contains unparsed messages and fields. Should exist only when parsing failed.

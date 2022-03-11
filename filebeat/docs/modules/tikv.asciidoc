@@ -1,0 +1,19 @@
+////
+This file is generated! See scripts/docs_collector.py
+////
+
+[[filebeat-module-tikv]]
+:modulename: tikv
+:has-dashboards: false
+
+== TiKV module
+
+The +{modulename}+ module collects and parses runtime logs generate by https://tikv.org[TiKV].
+
+
+[float]
+=== Fields
+
+For a description of each field in the module, see the
+<<exported-fields-tikv,exported fields>> section.
+

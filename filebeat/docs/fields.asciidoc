@@ -88,6 +88,7 @@ grouped in the following categories:
 * <<exported-fields-suricata>>
 * <<exported-fields-system>>
 * <<exported-fields-threatintel>>
+* <<exported-fields-tikv>>
 * <<exported-fields-tomcat>>
 * <<exported-fields-traefik>>
 * <<exported-fields-zeek>>
@@ -152691,6 +152692,64 @@ Number of rules observed.
 
 
 type: long
+
+--
+
+[[exported-fields-tikv]]
+== TiKV fields
+
+TiKV Module
+
+
+
+[float]
+=== tikv
+
+Common fields in the TiKV Module.
+
+
+
+*`tikv.body`*::
++
+--
+A fail-over field. Contains unparsed messages and fields. Should exist only when parsing failed.
+
+
+type: text
+
+--
+
+[float]
+=== pd
+
+Contains fields from the PD instance logs.
+
+
+
+*`tikv.pd.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
+=== tikv
+
+Contains fields from the TiKV instance logs.
+
+
+
+*`tikv.tikv.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
 
 --
 
