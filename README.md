@@ -1,6 +1,42 @@
-[![Build Status](https://beats-ci.elastic.co/job/Beats/job/beats/job/7.12/badge/icon)](https://beats-ci.elastic.co/job/Beats/job/beats/job/7.12/)
-[![GoReportCard](http://goreportcard.com/badge/elastic/beats)](http://goreportcard.com/report/elastic/beats)
-[![codecov.io](https://codecov.io/github/elastic/beats/coverage.svg?branch=master)](https://codecov.io/github/elastic/beats?branch=master)
+# Filebeat on TiDB Cloud
+
+- A TiDB module which covers TiDB and its ecosystem tools.
+- A TiKV module (TiKV and PD).
+- Support both docker container runtime and on-premise bare-metal runtime.
+- Based on the `v7.12` community release (to maintain compatible with AWS Opensearch `v1.x.x`).
+
+## Branch Policy
+
+All developments are under the `tidbcloud` namespace.
+
+- `tidbcloud/master`: The default branch which maps to the nightly dev environment.
+
+## Build and Publish Docker Image Locally
+
+```shell
+# Focus on filebeat sub-module.
+cd filebeat/
+
+# Clean up first.
+make clean
+
+# PACKAGES and PLATFORMS is used by beats makefile(magefile).
+# DOCKER_DEFAULT_PLATFORM is used by docker build command to force the build platform.
+PACKAGES="docker" PLATFORMS="linux/amd64" DOCKER_DEFAULT_PLATFORM="linux/amd64" make release
+docker tag docker.elastic.co/beats/filebeat-oss:7.12.1 sabaping/filebeat-oss-tidb-module:7.12.1-amd64
+PACKAGES="docker" PLATFORMS="linux/arm64" DOCKER_DEFAULT_PLATFORM="linux/arm64" make release
+docker tag docker.elastic.co/beats/filebeat-oss:7.12.1 sabaping/filebeat-oss-tidb-module:7.12.1-arm64
+
+# Merge to a single multi-arch image.
+docker manifest create sabaping/filebeat-oss-tidb-module:7.12.1 --amend sabaping/filebeat-oss-tidb-module:7.12.1-arm64 --amend sabaping/filebeat-oss-tidb-module:7.12.1-amd64
+
+# Push to docker hub.
+docker push sabaping/filebeat-oss-tidb-module:7.12.1-amd64
+docker push sabaping/filebeat-oss-tidb-module:7.12.1-arm64
+docker manifest push manifest create sabaping/filebeat-oss-tidb-module:7.12.1
+```
+
+---
 
 # Beats - The Lightweight Shippers of the Elastic Stack
 
