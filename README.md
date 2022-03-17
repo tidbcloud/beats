@@ -23,17 +23,17 @@ make clean
 # PACKAGES and PLATFORMS is used by beats makefile(magefile).
 # DOCKER_DEFAULT_PLATFORM is used by docker build command to force the build platform.
 PACKAGES="docker" PLATFORMS="linux/amd64" DOCKER_DEFAULT_PLATFORM="linux/amd64" make release
-docker tag docker.elastic.co/beats/filebeat-oss:7.12.1 sabaping/filebeat-oss-tidb-module:7.12.1-amd64
+docker tag docker.elastic.co/beats/filebeat-oss:7.12.2 sabaping/filebeat-oss-tidb-module:7.12.2-amd64
 PACKAGES="docker" PLATFORMS="linux/arm64" DOCKER_DEFAULT_PLATFORM="linux/arm64" make release
-docker tag docker.elastic.co/beats/filebeat-oss:7.12.1 sabaping/filebeat-oss-tidb-module:7.12.1-arm64
-
-# Merge to a single multi-arch image.
-docker manifest create sabaping/filebeat-oss-tidb-module:7.12.1 --amend sabaping/filebeat-oss-tidb-module:7.12.1-arm64 --amend sabaping/filebeat-oss-tidb-module:7.12.1-amd64
+docker tag docker.elastic.co/beats/filebeat-oss:7.12.2 sabaping/filebeat-oss-tidb-module:7.12.2-arm64
 
 # Push to docker hub.
-docker push sabaping/filebeat-oss-tidb-module:7.12.1-amd64
-docker push sabaping/filebeat-oss-tidb-module:7.12.1-arm64
-docker manifest push manifest create sabaping/filebeat-oss-tidb-module:7.12.1
+docker push sabaping/filebeat-oss-tidb-module:7.12.2-amd64
+docker push sabaping/filebeat-oss-tidb-module:7.12.2-arm64
+
+# Merge to a single multi-arch image.
+docker manifest create sabaping/filebeat-oss-tidb-module:7.12.2 --amend sabaping/filebeat-oss-tidb-module:7.12.2-arm64 --amend sabaping/filebeat-oss-tidb-module:7.12.2-amd64
+docker manifest push sabaping/filebeat-oss-tidb-module:7.12.2
 ```
 
 ---
