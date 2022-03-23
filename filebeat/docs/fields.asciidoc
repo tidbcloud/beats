@@ -145346,6 +145346,23 @@ type: keyword
 --
 
 [float]
+=== pd
+
+Contains fields from the PD instance logs.
+
+
+
+*`tidb.pd.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
 === slowlog
 
 Contains fields from the TiDB slow logs.
@@ -146096,6 +146113,23 @@ Contains fields from the TiFlash instance logs.
 
 
 *`tidb.tiflash.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
+=== tikv
+
+Contains fields from the TiKV instance logs.
+
+
+
+*`tidb.tikv.*`*::
 +
 --
 Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.

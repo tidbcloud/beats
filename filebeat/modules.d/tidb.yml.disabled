@@ -60,3 +60,10 @@
 
   ticdc:
     enabled: false
+
+  tikv:
+    enabled: false
+
+  pd:
+    enabled: false
+
