@@ -450,6 +450,13 @@ filebeat.modules:
   ticdc:
     enabled: false
 
+  tikv:
+    enabled: false
+
+  pd:
+    enabled: false
+
+
 #--------------------------------- TiKV Module ---------------------------------
 - module: tikv
 
