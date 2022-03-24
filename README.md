@@ -5,13 +5,150 @@
 - Support both docker container runtime and on-premise bare-metal runtime.
 - Based on the `v7.12` community release (to maintain compatible with AWS Opensearch `v1.x.x`).
 
+### TiDB Cluster Components
+
+TiDB operator tags each pod with the [label `app.kubernetes.io/component`](https://github.com/pingcap/tidb-operator/blob/master/pkg/apis/label/label.go#L31).
+
+[Possible components](https://github.com/pingcap/tidb-operator/blob/master/pkg/apis/label/label.go#L122) are:
+
+```text
+pd
+tidb
+tikv
+tiflash
+ticdc
+monitor
+clean
+restore
+backup
+dm-master
+dm-worker
+ng-monitoring
+```
+
+These component values are also a part of pod name. Filebeat uses them to discover log files.
+
 ## Branch Policy
 
 All developments are under the `tidbcloud` namespace.
 
 - `tidbcloud/master`: The default branch which maps to the nightly dev environment.
 
-## Build and Publish Docker Image Locally
+## Local Development
+
+### What is filebeat modules?
+
+A filebeat module is a user-friendly interface which abstracts tedious [inputs](https://www.elastic.co/guide/en/beats/filebeat/7.17/configuration-filebeat-options.html) configurations.
+
+It also provides index schemas, which are auto generated from the `fields.yml`, to elasticsearch.
+
+### Prerequisite: Install Build Tool `mage`
+
+```shell
+export PATH=$PATH:$(go env GOPATH)/bin
+go install github.com/magefile/mage
+```
+
+### Debug the Script Processor Separately
+
+- Configure the filebeat to accept stdin input and output results to stdout
+- Add your script processor
+
+Like this:
+
+```yaml
+filebeat.inputs:
+  - type: stdin
+    multiline.type: pattern
+    multiline.pattern: '^# Time: '
+    multiline.negate: true
+    multiline.match: after
+    multiline.timeout: 1s
+processors:
+  - script:
+      lang: javascript
+      id: tidb_slow_log_parser
+      params: { }
+      source: >
+        # your js scripts here
+output.console:
+  pretty: true
+path.home: ./__local_home
+logging.level: info
+logging.metrics.enabled: false
+```
+
+Use this configuration to start filebeat process.
+
+### Prepare a Minimal Elasticsearch Cluster
+
+Use docker-compose to start an elasticsearch instance and a kibana instance.
+
+`docker-compose.yml`:
+
+```yaml
+version: '2.2'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: es01
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    container_name: kib01
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+    networks:
+      - elastic
+networks:
+  elastic:
+    driver: bridge
+```
+
+### Run Tests
+
+```shell
+# Just run once
+make clean
+make python-env
+source ./build/python-env/bin/activate
+make filebeat.test
+# Run after each time module changing
+make update
+# Start tests
+GENERATE=1 INTEGRATION_TESTS=1 BEAT_STRICT_PERMS=false TESTING_FILEBEAT_MODULES=tikv pytest tests/system/test_modules.py
+```
+
+### Get Records from the Elasticsearch Instance
+
+```shell
+curl -X GET --location "http://localhost:9200/test-filebeat-modules/_search"
+```
+
+### View Test Configs and Logs
+
+Test results locate at `./build/system-tests/run/`
+
+### Build and Publish Docker Image Locally
+
+First, bump the version number if needed.
+
+```shell
+export VERSION=7.12.X
+# Under repo root directory
+./dev-tools/set_version ${VERSION}
+```
+
+All following steps are under `./filebeat` directory.
 
 ```shell
 # Focus on filebeat sub-module.
@@ -23,17 +160,17 @@ make clean
 # PACKAGES and PLATFORMS is used by beats makefile(magefile).
 # DOCKER_DEFAULT_PLATFORM is used by docker build command to force the build platform.
 PACKAGES="docker" PLATFORMS="linux/amd64" DOCKER_DEFAULT_PLATFORM="linux/amd64" make release
-docker tag docker.elastic.co/beats/filebeat-oss:7.12.2 sabaping/filebeat-oss-tidb-module:7.12.2-amd64
+docker tag docker.elastic.co/beats/filebeat-oss:${VERSION} sabaping/filebeat-oss-tidb-module:${VERSION}-amd64
 PACKAGES="docker" PLATFORMS="linux/arm64" DOCKER_DEFAULT_PLATFORM="linux/arm64" make release
-docker tag docker.elastic.co/beats/filebeat-oss:7.12.2 sabaping/filebeat-oss-tidb-module:7.12.2-arm64
+docker tag docker.elastic.co/beats/filebeat-oss:${VERSION} sabaping/filebeat-oss-tidb-module:${VERSION}-arm64
 
 # Push to docker hub.
-docker push sabaping/filebeat-oss-tidb-module:7.12.2-amd64
-docker push sabaping/filebeat-oss-tidb-module:7.12.2-arm64
+docker push sabaping/filebeat-oss-tidb-module:${VERSION}-amd64
+docker push sabaping/filebeat-oss-tidb-module:${VERSION}-arm64
 
 # Merge to a single multi-arch image.
-docker manifest create sabaping/filebeat-oss-tidb-module:7.12.2 --amend sabaping/filebeat-oss-tidb-module:7.12.2-arm64 --amend sabaping/filebeat-oss-tidb-module:7.12.2-amd64
-docker manifest push sabaping/filebeat-oss-tidb-module:7.12.2
+docker manifest create sabaping/filebeat-oss-tidb-module:${VERSION} --amend sabaping/filebeat-oss-tidb-module:${VERSION}-arm64 --amend sabaping/filebeat-oss-tidb-module:${VERSION}-amd64
+docker manifest push sabaping/filebeat-oss-tidb-module:${VERSION}
 ```
 
 ---
