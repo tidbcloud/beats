@@ -9,7 +9,7 @@ var:
       # the default path of tiup
       - /tidb-deploy/tiflash-9000/log/*.log
       # the default path of tidb operator
-      - /var/log/containers/*tiflash*.log
+      - /var/log/containers/*-tiflash*.log
 
 ingest_pipeline: ingest/pipeline.json
 input: config/input.yml

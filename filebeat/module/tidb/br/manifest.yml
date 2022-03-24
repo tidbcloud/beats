@@ -6,10 +6,10 @@ var:
     default: log
   - name: paths
     default:
-      # the default path of tiup
-      - /tidb-deploy/tidb-4000/log/*.log
       # the default path of tidb operator
-      - /var/log/containers/*-tidb*.log
+      - /var/log/containers/*-clean*.log
+      - /var/log/containers/*-restore*.log
+      - /var/log/containers/*-backup*.log
 
 ingest_pipeline: ingest/pipeline.json
 input: config/input.yml

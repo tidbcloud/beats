@@ -1,7 +1,7 @@
-- name: binlog
+- name: br
   type: group
   description: >
-    Contains fields from the binlog(pump and drainer) instance logs.
+    Contains fields from the back and restore instance logs.
   fields:
     - name: '*'
       type: keyword

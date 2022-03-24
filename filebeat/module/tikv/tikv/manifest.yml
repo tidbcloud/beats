@@ -8,7 +8,7 @@ var:
       # the default path of tiup
       - /tidb-deploy/tikv-20160/log/*.log
       # the default path of tidb operator
-      - /var/log/containers/*db-tikv*.log
+      - /var/log/containers/*-tikv*.log
 
 ingest_pipeline: ingest/pipeline.json
 input: config/input.yml

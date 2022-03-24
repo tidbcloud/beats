@@ -9,7 +9,7 @@ var:
       # the default path of tiup
       - /tidb-deploy/cdc-8300/log/*.log
       # the default path of tidb operator
-      - /var/log/containers/*cdc*.log
+      - /var/log/containers/*-ticdc*.log
 
 ingest_pipeline: ingest/pipeline.json
 input: config/input.yml

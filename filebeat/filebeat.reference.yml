@@ -444,9 +444,6 @@ filebeat.modules:
   tiflash:
     enabled: false
 
-  binlog:
-    enabled: false
-
   ticdc:
     enabled: false
 
@@ -456,6 +453,17 @@ filebeat.modules:
   pd:
     enabled: false
 
+  br:
+    enabled: false
+
+  dm:
+    enabled: false
+
+  monitor:
+    enabled: false
+
+  ngm:
+    enabled: false
 
 #--------------------------------- TiKV Module ---------------------------------
 - module: tikv

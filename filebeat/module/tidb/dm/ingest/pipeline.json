@@ -1,5 +1,5 @@
 {
-  "description": "Pipeline for parsing binlog(pump and drainer) logs",
+  "description": "Pipeline for parsing Data Migration logs",
   "processors": [{
     "set": {
       "field": "event.ingested",
