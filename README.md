@@ -1,7 +1,7 @@
 # Filebeat on TiDB Cloud
 
-- A TiDB module which covers TiDB and its ecosystem tools.
-- A TiKV module (TiKV and PD).
+- A TiDB module covering TiDB and its ecosystem tools, such as PD, TiDB, TiKV, TiFlash, TiCDC, monitor, backup&restore, data migration, and ng-monitoring.
+- A TiKV module covering TiKV and PD only.
 - Support both docker container runtime and on-premise bare-metal runtime.
 - Based on the `v7.12` community release (to maintain compatible with AWS Opensearch `v1.x.x`).
 
