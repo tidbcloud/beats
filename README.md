@@ -116,6 +116,8 @@ networks:
 
 ### Run Tests
 
+All following steps are under `./filebeat` directory.
+
 ```shell
 # Just run once
 make clean
@@ -156,6 +158,8 @@ cd filebeat/
 
 # Clean up first.
 make clean
+
+export VERSION=$(../dev-tools/get_version)
 
 # PACKAGES and PLATFORMS is used by beats makefile(magefile).
 # DOCKER_DEFAULT_PLATFORM is used by docker build command to force the build platform.
