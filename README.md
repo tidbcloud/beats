@@ -1,46 +1,23 @@
 # Filebeat on TiDB Cloud
 
-- A TiDB module covering TiDB and its ecosystem tools, such as PD, TiDB, TiKV, TiFlash, TiCDC, monitor, backup&restore, data migration, and ng-monitoring.
-- A TiKV module covering TiKV and PD only.
-- Support both docker container runtime and on-premise bare-metal runtime.
+- A **Kubernetes label auto-discovery based** TiDB module for cloud-native TiDB clusters.
+- A **file-path based** TiDB module covering TiDB and its ecosystem tools, such as PD, TiDB, TiKV, TiFlash, TiCDC, monitor, backup&restore, data migration, and ng-monitoring.
+- A **file-path based** TiKV module covering TiKV and PD only.
 - Based on the `v7.12` community release (to maintain compatible with AWS Opensearch `v1.x.x`).
 
-### TiDB Cluster Components
+> What is filebeat modules?
+>
+> A filebeat module is a user-friendly configuration interface which abstracts tedious [inputs](https://www.elastic.co/guide/en/beats/filebeat/7.17/configuration-filebeat-options.html) configurations.
+>
+> It also provides index schemas and lifecycle policies , which are auto-generated from the `fields.yml`, to elasticsearch.
 
-TiDB operator tags each pod with the [label `app.kubernetes.io/component`](https://github.com/pingcap/tidb-operator/blob/master/pkg/apis/label/label.go#L31).
+## Get Started
 
-[Possible components](https://github.com/pingcap/tidb-operator/blob/master/pkg/apis/label/label.go#L122) are:
+First, get the latest version of the image at [my personal docker hub](https://hub.docker.com/repository/docker/sabaping/filebeat-oss-tidb-module).
 
-```text
-pd
-tidb
-tikv
-tiflash
-ticdc
-monitor
-clean
-restore
-backup
-dm-master
-dm-worker
-ng-monitoring
-```
-
-These component values are also a part of pod name. Filebeat uses them to discover log files.
-
-## Branch Policy
-
-All developments are under the `tidbcloud` namespace.
-
-- `tidbcloud/master`: The default branch which maps to the nightly dev environment.
+Then refer to [从零开始体验 Filebeat TiDB Module](https://pingcap.feishu.cn/docs/doccnB7i1WOaRUBsrb6pojQu6eb).
 
 ## Local Development
-
-### What is filebeat modules?
-
-A filebeat module is a user-friendly interface which abstracts tedious [inputs](https://www.elastic.co/guide/en/beats/filebeat/7.17/configuration-filebeat-options.html) configurations.
-
-It also provides index schemas, which are auto generated from the `fields.yml`, to elasticsearch.
 
 ### Prerequisite: Install Build Tool `mage`
 
@@ -176,6 +153,44 @@ docker push sabaping/filebeat-oss-tidb-module:${VERSION}-arm64
 docker manifest create sabaping/filebeat-oss-tidb-module:${VERSION} --amend sabaping/filebeat-oss-tidb-module:${VERSION}-arm64 --amend sabaping/filebeat-oss-tidb-module:${VERSION}-amd64
 docker manifest push sabaping/filebeat-oss-tidb-module:${VERSION}
 ```
+
+## References
+
+### Branch Policy
+
+All developments are under the `tidbcloud` namespace.
+
+- `tidbcloud/master`: The default branch which maps to the nightly dev environment.
+
+### TiDB Cluster Components
+
+TiDB operator tags each pod with the [label `app.kubernetes.io/component`](https://github.com/pingcap/tidb-operator/blob/master/pkg/apis/label/label.go#L31).
+
+[Possible components](https://github.com/pingcap/tidb-operator/blob/master/pkg/apis/label/label.go#L122) are:
+
+```text
+pd
+tidb
+tikv
+tiflash
+ticdc
+monitor
+clean
+restore
+backup
+dm-master
+dm-worker
+ng-monitoring
+```
+
+The infra-api might deploy a tidb-lightning job. This job is another component:
+
+```text
+tidb-lightning
+```
+
+These component values are also a part of pod name. Filebeat could use them to discover log files.
+
 
 ---
 
