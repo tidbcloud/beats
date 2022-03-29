@@ -459,6 +459,9 @@ filebeat.modules:
   dm:
     enabled: false
 
+  lightning:
+    enabled: false
+
   monitor:
     enabled: false
 

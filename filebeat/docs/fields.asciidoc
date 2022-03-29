@@ -145363,6 +145363,23 @@ type: keyword
 --
 
 [float]
+=== lightning
+
+Contains fields from the lightning instance logs.
+
+
+
+*`tidb.lightning.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
 === monitor
 
 Contains fields from the monitor instance logs.
