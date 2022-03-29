@@ -1,0 +1,13 @@
+module_version: 1.0
+
+var:
+  - name: input_type
+    # log or container
+    default: log
+  - name: paths
+    default:
+      # the default path of tidb operator
+      - /var/log/containers/*tidb-lightning*.log
+
+ingest_pipeline: ingest/pipeline.json
+input: config/input.yml

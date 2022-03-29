@@ -14,10 +14,10 @@ multiline:
 processors:
 {{ if eq .input_type "container" }}
   - add_kubernetes_metadata:
-    host: ${NODE_NAME}
-    matchers:
-      - logs_path:
-          logs_path: "/var/log/containers/"
+      host: ${NODE_NAME}
+      matchers:
+        - logs_path:
+            logs_path: "/var/log/containers/"
 {{ end }}
   - add_cloud_metadata: ~
   - script:
