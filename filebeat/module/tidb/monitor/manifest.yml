@@ -6,12 +6,8 @@ var:
     default: log
   - name: paths
     default:
-      # the default path of tiup
-      - /tidb-deploy/pump-8250/log/*.log
-      - /tidb-deploy/drainer-8249/log/*.log
       # the default path of tidb operator
-      - /var/log/containers/*pump*.log
-      - /var/log/containers/*drainer*.log
+      - /var/log/containers/-monitor*prometheus*.log
 
 ingest_pipeline: ingest/pipeline.json
 input: config/input.yml

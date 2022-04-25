@@ -145329,13 +145329,81 @@ type: text
 --
 
 [float]
-=== binlog
+=== br
 
-Contains fields from the binlog(pump and drainer) instance logs.
+Contains fields from the back and restore instance logs.
 
 
 
-*`tidb.binlog.*`*::
+*`tidb.br.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
+=== dm
+
+Contains fields from the Data Migration instance logs.
+
+
+
+*`tidb.dm.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
+=== lightning
+
+Contains fields from the lightning instance logs.
+
+
+
+*`tidb.lightning.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
+=== monitor
+
+Contains fields from the monitor instance logs.
+
+
+
+*`tidb.monitor.*`*::
++
+--
+Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.
+
+
+type: keyword
+
+--
+
+[float]
+=== ngm
+
+Contains fields from the Next Generation Monitoring Server instance logs.
+
+
+
+*`tidb.ngm.*`*::
 +
 --
 Log fields defined in the application. The type of values are always string. You can use a global convert(https://www.elastic.co/guide/en/beats/filebeat/master/convert.html) processor to specify type.

@@ -8,7 +8,7 @@ var:
       # the default path of tiup
       - /tidb-deploy/pd-2379/log/*.log
       # the default path of tidb operator
-      - /var/log/containers/*db-pd*.log
+      - /var/log/containers/*-pd*.log
 
 ingest_pipeline: ingest/pipeline.json
 input: config/input.yml

@@ -55,9 +55,6 @@
   tiflash:
     enabled: false
 
-  binlog:
-    enabled: false
-
   ticdc:
     enabled: false
 
@@ -67,3 +64,17 @@
   pd:
     enabled: false
 
+  br:
+    enabled: false
+
+  dm:
+    enabled: false
+
+  lightning:
+    enabled: false
+
+  monitor:
+    enabled: false
+
+  ngm:
+    enabled: false

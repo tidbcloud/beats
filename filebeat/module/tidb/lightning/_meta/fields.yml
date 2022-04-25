@@ -1,7 +1,7 @@
-- name: binlog
+- name: lightning
   type: group
   description: >
-    Contains fields from the binlog(pump and drainer) instance logs.
+    Contains fields from the lightning instance logs.
   fields:
     - name: '*'
       type: keyword
