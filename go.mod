@@ -87,11 +87,11 @@ require (
 	github.com/gofrs/flock v0.7.2-0.20190320160742-5135e617513b
 	github.com/gofrs/uuid v3.3.0+incompatible
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.4.2
+	github.com/golang/protobuf v1.5.0
 	github.com/golang/snappy v0.0.1
 	github.com/gomodule/redigo v1.8.3
 	github.com/google/flatbuffers v1.7.2-0.20170925184458-7a6b2bf521e9
-	github.com/google/go-cmp v0.5.2
+	github.com/google/go-cmp v0.5.5
 	github.com/google/gopacket v1.1.18-0.20191009163724-0ad7f2610e34
 	github.com/google/uuid v1.1.2-0.20190416172445-c2e93f3ae59f
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
@@ -175,7 +175,7 @@ require (
 	google.golang.org/api v0.15.0
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
 	google.golang.org/grpc v1.29.1
-	google.golang.org/protobuf v1.24.0
+	google.golang.org/protobuf v1.33.0
 	gopkg.in/inf.v0 v0.9.1
 	gopkg.in/jcmturner/gokrb5.v7 v7.5.0
 	gopkg.in/mgo.v2 v2.0.0-20160818020120-3f83fa500528
