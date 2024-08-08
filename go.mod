@@ -74,7 +74,7 @@ require (
 	github.com/elastic/go-ucfg v0.8.3
 	github.com/elastic/go-windows v1.0.1 // indirect
 	github.com/elastic/gosigar v0.14.1
-	github.com/fatih/color v1.9.0
+	github.com/fatih/color v1.16.0
 	github.com/fsnotify/fsevents v0.1.1
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/go-ole/go-ole v1.2.5-0.20190920104607-14974a1cf647 // indirect
@@ -99,7 +99,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.13.0 // indirect
 	github.com/h2non/filetype v1.1.1-0.20201130172452-f60988ab73d5
 	github.com/hashicorp/go-multierror v1.1.0
-	github.com/hashicorp/go-retryablehttp v0.6.6
+	github.com/hashicorp/go-retryablehttp v0.7.7
 	github.com/hashicorp/golang-lru v0.5.2-0.20190520140433-59383c442f7d // indirect
 	github.com/hashicorp/nomad/api v0.0.0-20200303134319-e31695b5bbe6
 	github.com/hectane/go-acl v0.0.0-20190604041725-da78bae5fc95
@@ -115,7 +115,7 @@ require (
 	github.com/lib/pq v1.1.2-0.20190507191818-2ff3cb3adc01
 	github.com/magefile/mage v1.11.0
 	github.com/mailru/easyjson v0.7.1 // indirect
-	github.com/mattn/go-colorable v0.1.6
+	github.com/mattn/go-colorable v0.1.13
 	github.com/mattn/go-ieproxy v0.0.0-20191113090002-7c0f6868bffe // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
 	github.com/miekg/dns v1.1.15
@@ -146,7 +146,7 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.2
 	github.com/tsg/go-daemon v0.0.0-20200207173439-e704b93fd89b
 	github.com/tsg/gopacket v0.0.0-20200626092518-2ab8e397a786
 	github.com/ugorji/go/codec v1.1.8
@@ -168,7 +168,7 @@ require (
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
-	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8
+	golang.org/x/sys v0.20.0
 	golang.org/x/text v0.3.3
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
 	golang.org/x/tools v0.0.0-20200904185747-39188db58858
